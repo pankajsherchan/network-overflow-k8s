@@ -1,3 +1,5 @@
+import AppError from './appError';
+
 const sendErrorDev = (err, res) => {
   res.status(err.statusCode).json({
     status: err.status,
@@ -24,15 +26,22 @@ const sendErrorProd = (err, res) => {
   }
 };
 
-const errorHandler = (err, req, res, next) => {
+const handleJWTError = () => new AppError('Invalid token. Please login', 401);
+
+const errorController = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'error';
 
   if (process.env.NODE_ENV === 'development') {
     sendErrorDev(err, res);
   } else if (process.env.NODE_ENV === 'production') {
+    let error = { ...err };
+    if (error.name === 'JsonWebTokenError') {
+      error = handleJWTError();
+    }
+
     sendErrorProd();
   }
 };
 
-export default errorHandler;
+export default errorController;

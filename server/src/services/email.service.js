@@ -1,8 +1,8 @@
 import sendGridMail from '@sendgrid/mail';
 import httpStatusCode from 'http-status-codes';
+import AppError from '../application/error/appError';
 import env from '../env';
 import logger from '../utils';
-import AppError from '../utils/appError';
 
 // todo: needs to move to separate config file
 sendGridMail.setApiKey(env.SEND_GRID_API_KEY);

@@ -1,10 +1,9 @@
 import express from 'express';
-import jwt from 'jsonwebtoken';
 import { authenticationRoutes } from './application/authentication';
+import { extractAndVerifyToken } from './application/authentication/auth.controller';
+import AppError from './application/error/appError';
+import globalErrorHandler from './application/error/error.controller';
 import { userRoutes } from './application/users';
-import { extractToken } from './services/token.service';
-import AppError from './utils/appError';
-import globalErrorHandler from './utils/errorHandler';
 
 const router = express.Router();
 
@@ -16,18 +15,7 @@ router.use('/', authenticationRoutes);
 
 router.use('/api/user', userRoutes);
 
-router.use('/protected', extractToken, (req, res) => {
-  jwt.verify(req.token, 'secretKey', (error, authData) => {
-    if (error) {
-      res.sendStatus(403);
-    } else {
-      res.json({
-        message: 'Authorized',
-        authData
-      });
-    }
-  });
-});
+router.use('/protected', extractAndVerifyToken, (req, res, next) => {});
 
 router.all('*', (req, res, next) => {
   const err = new AppError(`Can't find ${req.originalUrl} on this server`, 404);

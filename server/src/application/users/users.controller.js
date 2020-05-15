@@ -5,8 +5,8 @@ import { verifyToken } from '../../services/token.service';
 import * as userService from '../../services/user.service';
 import { HTTP_RESPONSE_MESSAGES } from '../../shared/messages';
 import logger from '../../utils';
-import AppError from '../../utils/appError';
 import catchAsync from '../../utils/catchAsync';
+import AppError from '../error/appError';
 
 export const createUser = catchAsync(async (req, res) => {
   logger.info('UserController - CreateUser');
