@@ -6,8 +6,22 @@ const PORT = env.PORT;
 
 connectDB();
 
-app.listen(PORT, () =>
+const server = app.listen(PORT, () =>
   console.log(
     `server running in ${env.NODE_ENV} mode on PORT ${PORT}`.yellow.bold
   )
 );
+
+process.on('unhandledRejection', err => {
+  console.log(err.name, err.message);
+  server.close(() => {
+    process.exit(1);
+  });
+});
+
+process.on('uncaughtException', err => {
+  console.log(err.name, err.message);
+  server.close(() => {
+    process.exit(1);
+  });
+});

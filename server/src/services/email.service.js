@@ -2,6 +2,7 @@ import sendGridMail from '@sendgrid/mail';
 import httpStatusCode from 'http-status-codes';
 import env from '../env';
 import logger from '../utils';
+import AppError from '../utils/appError';
 
 // todo: needs to move to separate config file
 sendGridMail.setApiKey(env.SEND_GRID_API_KEY);
@@ -13,37 +14,38 @@ const templates = {
 export const sendEmail = data => {
   logger.info('Email Service - Send email');
 
+  const {
+    receiver,
+    sender,
+    templateName,
+    name,
+    verify_account_url,
+    header,
+    text,
+    buttonText
+  } = data;
+
   let result = {};
 
   const msg = {
-    to: data.receiver,
-    from: data.sender,
-    templateId: templates[data.templateName],
+    to: receiver,
+    from: sender,
+    templateId: templates[templateName],
     dynamic_template_data: {
-      name: data.name,
-      confirm_account_url: data.verify_account_url,
-      header: data.header,
-      text: data.text,
-      c2a_link: data.verify_account_url,
-      c2a_button: data.buttonText
+      name: name,
+      confirm_account_url: verify_account_url,
+      header: header,
+      text: text,
+      c2a_link: verify_account_url,
+      c2a_button: buttonText
     }
   };
 
   sendGridMail.send(msg, (error, result) => {
     if (error) {
-      logger.error('Email Service - send email', { meta: error });
+      logger.error('Email Service - send email fail');
 
-      result = {
-        data: null,
-        message: 'Email sent failed',
-        httpStatus: httpStatusCode.BAD_REQUEST
-      };
-    } else {
-      result = {
-        data: null,
-        message: 'Email sent successfully',
-        httpStatus: httpStatusCode.OK
-      };
+      throw new AppError('Email sent failed', httpStatusCode.BAD_REQUEST);
     }
   });
 

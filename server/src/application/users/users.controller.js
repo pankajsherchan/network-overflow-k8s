@@ -5,61 +5,29 @@ import { verifyToken } from '../../services/token.service';
 import * as userService from '../../services/user.service';
 import { HTTP_RESPONSE_MESSAGES } from '../../shared/messages';
 import logger from '../../utils';
+import AppError from '../../utils/appError';
+import catchAsync from '../../utils/catchAsync';
 
-/**
- * create user
- *
- * @param {*} req
- * @param {*} res
- */
-
-export const createUser = async (req, res) => {
+export const createUser = catchAsync(async (req, res) => {
   logger.info('UserController - CreateUser');
   const reqUser = req.body;
   const { username, email } = req.body;
 
-  try {
-    const result = await userService.saveUser(reqUser);
-    await userService.sendUserVerificationEmail(username, email);
-    res.send(result);
-  } catch (error) {
-    logger.error('UserController - createUser - could not add error', error);
-    res.send(error);
-  }
-};
+  const result = await userService.saveUser(reqUser);
+  await userService.sendUserVerificationEmail(username, email);
+  res.send(result);
+});
 
-/**
- * update user
- *
- * @param {*} req
- * @param {*} res
- */
-export const updateUser = async (req, res) => {
-  try {
-    const result = await userService.updateUser(req.body);
-    res.send(result);
-  } catch (error) {
-    res.send(error);
-  }
-};
+export const updateUser = catchAsync(async (req, res) => {
+  const result = await userService.updateUser(req.body);
+  res.send(result);
+});
 
-/**
- * login the user
- * returns jwt token
- * @param {*} req
- * @param {*} res
- */
-export const login = async (req, res) => {
+export const login = catchAsync(async (req, res) => {
   logger.info('UserController - login');
-
-  try {
-    const token = await userService.loginUser(req.body);
-    res.json(token);
-  } catch (error) {
-    logger.error(`USER CONTROLLER login: ${error}`);
-    res.boom.badRequest({ message: error.message });
-  }
-};
+  const token = await userService.loginUser(req.body);
+  res.json(token);
+});
 
 /**
  *returns the user by username
@@ -67,19 +35,18 @@ export const login = async (req, res) => {
  * @param {*} req
  * @param {*} res
  */
-export const getUser = async (req, res) => {
+export const getUser = catchAsync(async (req, res, next) => {
   logger.info('UserController - GetUser');
 
   const username = req.params.username;
+  const result = await userService.getUser({ username });
 
-  try {
-    const result = await userService.getUser({ username });
-    res.send(result);
-  } catch (error) {
-    logger.error('UserController - getUser', error);
-    res.send(error);
+  if (!result || !result.data) {
+    return next(new AppError(`No user with username ${username} found`, 404));
   }
-};
+
+  res.send(result);
+});
 
 /**
  * verifies user and updates the user's verified field to true

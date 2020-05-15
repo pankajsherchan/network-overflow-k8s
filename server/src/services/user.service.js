@@ -4,9 +4,17 @@ import User from '../database/schemas/user.schema';
 import env from '../env';
 import { HTTP_RESPONSE_MESSAGES } from '../shared/messages';
 import logger from '../utils';
+import AppError from '../utils/appError';
+import checkResponse from '../utils/responseHandler';
 import { sendEmail } from './email.service';
 import { hashPassword } from './security.service';
 import { generateToken } from './token.service';
+
+const messages = {
+  USER_ALREADY_EXIST: 'User already exist',
+  USER_CREATED_FAILED: 'User creation failed. Please try again',
+  USER_CREATED_SUCCESS: 'User created successfully'
+};
 
 export const getUser = async ({ username }) => {
   logger.info('User Service - GetUser', { meta: username });
@@ -28,6 +36,8 @@ export const getUser = async ({ username }) => {
       httpStatus: httpStatus.BAD_REQUEST,
       message: HTTP_RESPONSE_MESSAGES.USER.USER_GET_FAILED
     };
+
+    throw error;
   }
 
   return result;
@@ -36,20 +46,12 @@ export const getUser = async ({ username }) => {
 export const saveUser = async user => {
   logger.info('UserService - SaveUser');
 
-  let result = {};
   const { username, firstName, lastName, email, password } = user;
 
   try {
     const userInDatabase = await getUser({ username });
-
-    if (userInDatabase && userInDatabase.data) {
-      result = {
-        data: null,
-        httpStatus: httpStatus.BAD_REQUEST,
-        message: HTTP_RESPONSE_MESSAGES.USER.USER_ALREADY_EXIST
-      };
-
-      return result;
+    if (checkResponse(userInDatabase)) {
+      throw new AppError(messages.USER_ALREADY_EXIST, httpStatus.BAD_REQUEST);
     }
 
     const newUser = new User({
@@ -65,42 +67,18 @@ export const saveUser = async user => {
     user = await newUser.save();
 
     if (!user) {
-      result = {
-        data: null,
-        httpStatus: httpStatus.BAD_REQUEST,
-        message: HTTP_RESPONSE_MESSAGES.USER.USER_CREATED_FAILED
-      };
-
-      return result;
+      throw new AppError(messages.USER_CREATED_FAILED, httpStatus.BAD_REQUEST);
     }
 
-    // send email confirmation
-    const sendEmailResponse = sendUserVerificationEmail({ username });
+    logger.info('Userservice - save user - successful');
 
-    if (!sendEmailResponse) {
-      result = {
-        data: null,
-        httpStatus: httpStatus.BAD_REQUEST,
-        message: HTTP_RESPONSE_MESSAGES.VERIFICATION.USER_VERIFIED_FAILED
-      };
-    }
-
-    result = {
+    return {
       data: user,
-      httpStatus: httpStatus.OK,
-      message: HTTP_RESPONSE_MESSAGES.USER.USER_CREATED_SUCCESSFUL
+      httpStatus: httpStatus.OK
     };
   } catch (error) {
-    logger.error('UserService - SaveUser', { meta: error });
-
-    result = {
-      data: null,
-      httpStatus: httpStatus.BAD_REQUEST,
-      message: error
-    };
+    throw new AppError(error.message, httpStatus.BAD_REQUEST);
   }
-
-  return result;
 };
 
 export const loginUser = async user => {
@@ -196,7 +174,7 @@ export const forgotPassword = async user => {
   return sendEmail(emailConfig);
 };
 
-export const sendUserVerificationEmail = async ({ username, email }) => {
+export const sendUserVerificationEmail = async (username, email) => {
   const userVerificationToken = generateToken(
     env.VERIFY_USER_SECRET_KEY,
     username

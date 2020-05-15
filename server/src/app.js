@@ -7,13 +7,13 @@ import { routes } from './routes';
 
 const app = express();
 
-app.use(cors());
-
 setup();
 
 app.use('/', routes);
 
 function setup() {
+  app.use(cors());
+
   app.use(morgan('dev'));
 
   app.use(boom());

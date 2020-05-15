@@ -1,0 +1,6 @@
+{
+    data: null,
+    status: '',
+    httpStatus: number
+
+}
