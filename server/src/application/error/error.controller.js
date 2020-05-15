@@ -1,6 +1,10 @@
+import logger from '../../utils';
 import AppError from './appError';
 
 const sendErrorDev = (err, res) => {
+  logger.info('Error Controller - send error dev');
+  console.log('err: ', err);
+
   res.status(err.statusCode).json({
     status: err.status,
     error: err,

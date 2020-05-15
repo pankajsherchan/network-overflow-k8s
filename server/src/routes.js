@@ -1,6 +1,6 @@
 import express from 'express';
 import { authenticationRoutes } from './application/authentication';
-import { extractAndVerifyToken } from './application/authentication/auth.controller';
+import { extractAndVerifyToken } from './application/authentication/authentication.controller';
 import AppError from './application/error/appError';
 import globalErrorHandler from './application/error/error.controller';
 import { userRoutes } from './application/users';

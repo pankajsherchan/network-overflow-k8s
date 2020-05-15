@@ -1,22 +1,183 @@
-// export const extractToken = (req, res, next) => {
-//   const bearerHeader = req.headers['authorization'];
+import bcrypt from 'bcrypt';
+import httpStatusCodes from 'http-status-codes';
+import jwt from 'jsonwebtoken';
+import AppError from '../application/error/appError';
+import User from '../database/schemas/user.schema';
+import env from '../env';
+import logger from '../utils';
+import { sendEmail } from './email.service';
 
-//   if (typeof bearerHeader !== 'undefined') {
-//     const bearer = bearerHeader.split(' ');
-//     const token = bearer[1];
-//     req.token = token;
-//     next();
-//   } else {
-//     res.sendStatus(403);
-//   }
-// };
+const messages = {
+  USER_ALREADY_EXIST: 'User already exist',
+  USER_CREATED_FAILED: 'User creation failed. Please try again',
+  USER_CREATED_SUCCESS: 'User created successfully'
+};
 
-// export const generateToken = username => {
-//   return jwt.sign({ username }, env.JWT_SECRET_KEY, { expiresIn: '30s' });
-// };
+export const signup = async user => {
+  logger.info('UserService - SaveUser');
 
-// export const verifyToken = async token => {
-//   const isTokenVerified = await jwt.verify(token, env.JWT_SECRET_KEY);
+  const { username, firstName, lastName, email, password } = user;
 
-//   return isTokenVerified;
-// };
+  try {
+    const userInDatabase = await User.findOne({ username });
+    console.log('userInDatabase: ', userInDatabase);
+    if (userInDatabase) {
+      return {
+        data: null,
+        httpStatus: httpStatusCodes.OK,
+        message: messages.USER_ALREADY_EXIST
+      };
+    }
+
+    console.log('here');
+
+    const newUser = new User({
+      username,
+      firstName,
+      lastName,
+      email
+    });
+
+    const hashedPassword = await hashPassword({ password });
+    newUser.password = hashedPassword;
+
+    user = await newUser.save();
+
+    if (!user) {
+      throw new AppError(
+        messages.USER_CREATED_FAILED,
+        httpStatusCodes.BAD_REQUEST
+      );
+    }
+
+    logger.info('Userservice - save user - successful');
+
+    return {
+      data: user,
+      httpStatus: httpStatusCodes.OK
+    };
+  } catch (error) {
+    throw new AppError(error.message, httpStatusCodes.BAD_REQUEST);
+  }
+};
+
+export const loginUser = async user => {
+  logger.info('UserService - Login user');
+
+  try {
+    const { username, password } = user;
+
+    const userInDatabase = await User.findOne({ username }).select('+password');
+
+    if (
+      !userInDatabase ||
+      !(await verifyPassword(password, userInDatabase.password))
+    ) {
+      throw new AppError('Incorrect email or password', 401);
+    }
+
+    const token = generateToken(env.LOGIN_USER_SECRET_KEY, username);
+
+    return {
+      token,
+      httpStatusCodes: httpStatusCodes.OK
+    };
+  } catch (error) {
+    logger.error(`USER CONTROLLER login user: ${error}`);
+    throw new AppError(error.message, httpStatusCodes.BAD_REQUEST);
+  }
+};
+
+export const forgotPassword = async user => {
+  logger.info('UserService - Forgot Password');
+
+  const { username, email, firstName, lastName } = user;
+
+  const userForgotPasswordVerificationToken = generateToken(
+    env.FORGOT_PASSWORD_SECRET_KEY,
+    username
+  );
+
+  const url = `${env.BASE_URL}/forgotPassword/${userForgotPasswordVerificationToken}`;
+
+  const emailConfig = {
+    receiver: email,
+    sender: 'pankaj2070.sherchan@gmail.com',
+    templateName: 'call_to_action',
+    name: `${firstName} ${lastName}`,
+    verify_account_url: url,
+    header: 'Forgot Password',
+    buttonText: 'Reset Password',
+    text:
+      'You are almost there. To reset your password please click the link below.'
+  };
+
+  return sendEmail(emailConfig);
+};
+
+const verifyPassword = async (password, encryptPassword) => {
+  return await bcrypt.compare(password, encryptPassword);
+};
+
+export const sendUserVerificationEmail = async (username, email) => {
+  const userVerificationToken = generateToken(
+    env.VERIFY_USER_SECRET_KEY,
+    username
+  );
+
+  const url = `${env.BASE_URL}/confirmation/${userVerificationToken}`;
+
+  const emailConfig = {
+    receiver: email,
+    sender: 'pankaj2070.sherchan@gmail.com',
+    templateName: 'call_to_action',
+    name: 'Pankaj Sherchan',
+    verify_account_url: url,
+    header: 'Account Created',
+    buttonText: 'Activate Account',
+    text:
+      'You are almost there. To finish activating your account please click the link below.'
+  };
+
+  return sendEmail(emailConfig);
+};
+
+export const generateToken = (secretKey, tokenData) => {
+  return jwt.sign({ tokenData }, secretKey, {
+    expiresIn: env.TOKEN_EXPIRATION_TIME
+  });
+};
+
+export const verifyToken = (token, secretKey) => {
+  return jwt.verify(token, secretKey);
+};
+
+export const extractTokenInfo = (token, secretKey) => {
+  jwt.verify(token, secretKey, (error, authData) => {
+    if (error) {
+      throw new AppError('Invalid Token', 401);
+    } else {
+      return {
+        data: authData,
+        status: httpStatusCodes.OK
+      };
+    }
+  });
+};
+
+export const hashPassword = async ({ password }) => {
+  logger.info('Security Service - hashPassword');
+  try {
+    const salt = await generateSalt();
+
+    return bcrypt.hash(password, salt);
+  } catch (error) {
+    logger.error('Security Service - hashPassword', error);
+
+    return error;
+  }
+};
+
+const generateSalt = async () => {
+  return bcrypt.genSalt(10);
+};

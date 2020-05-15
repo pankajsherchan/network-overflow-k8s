@@ -1,6 +1,6 @@
 import { createMuiTheme } from '@material-ui/core';
 
-const appBlue = '#0B72B9';
+const appBlue = '#0d47a1';
 const appOrange = '#FFBA60';
 const appRed = '#ff0000';
 

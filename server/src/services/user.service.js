@@ -1,4 +1,3 @@
-import bcrypt from 'bcrypt';
 import httpStatus from 'http-status-codes';
 import AppError from '../application/error/appError';
 import User from '../database/schemas/user.schema';
@@ -6,9 +5,8 @@ import env from '../env';
 import { HTTP_RESPONSE_MESSAGES } from '../shared/messages';
 import logger from '../utils';
 import checkResponse from '../utils/responseHandler';
+import { generateToken, hashPassword } from './authentication.service';
 import { sendEmail } from './email.service';
-import { hashPassword } from './security.service';
-import { generateToken } from './token.service';
 
 const messages = {
   USER_ALREADY_EXIST: 'User already exist',
@@ -81,33 +79,6 @@ export const saveUser = async user => {
   }
 };
 
-export const loginUser = async user => {
-  logger.info('UserService - Login user');
-
-  try {
-    const { username, password } = user;
-
-    const userInDatabase = await User.findOne({ username }).select('+password');
-
-    if (
-      !userInDatabase ||
-      !(await verifyPassword(password, userInDatabase.password))
-    ) {
-      throw new AppError('Incorrect email or password', 401);
-    }
-
-    const token = generateToken(env.LOGIN_USER_SECRET_KEY, username);
-
-    return {
-      token,
-      httpStatus: httpStatus.OK
-    };
-  } catch (error) {
-    logger.error(`USER CONTROLLER login user: ${error}`);
-    throw new AppError(error.message, httpStatus.BAD_REQUEST);
-  }
-};
-
 export const updateUser = async user => {
   logger.info('User Service - update user');
 
@@ -132,38 +103,13 @@ export const updateUser = async user => {
   return result;
 };
 
-export const forgotPassword = async user => {
-  const { username, email } = user;
-
-  const userForgotPasswordVerificationToken = generateToken(
-    env.FORGOT_PASSWORD_SECRET_KEY,
-    username
-  );
-
-  const url = `http://localhost:5000/forgotPassword/${userForgotPasswordVerificationToken}`;
-
-  const emailConfig = {
-    receiver: 'w0573147@selu.edu', // should be email
-    sender: 'pankaj2070.sherchan@gmail.com',
-    templateName: 'call_to_action',
-    name: 'Pankaj Sherchan',
-    verify_account_url: url,
-    header: 'Forgot Password',
-    buttonText: 'Reset Password',
-    text:
-      'You are almost there. To reset your password please click the link below.'
-  };
-
-  return sendEmail(emailConfig);
-};
-
 export const sendUserVerificationEmail = async (username, email) => {
   const userVerificationToken = generateToken(
     env.VERIFY_USER_SECRET_KEY,
     username
   );
 
-  const url = `http://localhost:5000/confirmation/${userVerificationToken}`;
+  const url = `${env.BASE_URL}/confirmation/${userVerificationToken}`;
 
   const emailConfig = {
     receiver: email,
@@ -178,8 +124,4 @@ export const sendUserVerificationEmail = async (username, email) => {
   };
 
   return sendEmail(emailConfig);
-};
-
-const verifyPassword = async (password, encryptPassword) => {
-  return await bcrypt.compare(password, encryptPassword);
 };

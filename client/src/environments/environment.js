@@ -1,8 +1,8 @@
 export const environment = {
   production: false,
   apis: {
-    signup: '/user',
-    signin: '/user/signin'
+    signup: '/signup',
+    signin: '/signin'
   },
-  apiUrl: 'http://localhost:5000/api'
+  apiUrl: 'http://localhost:5000'
 };

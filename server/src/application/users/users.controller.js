@@ -1,7 +1,9 @@
 import httpStatusCode from 'http-status-codes';
 import env from '../../env';
-import { hashPassword } from '../../services/security.service';
-import { verifyToken } from '../../services/token.service';
+import {
+  hashPassword,
+  verifyToken
+} from '../../services/authentication.service';
 import * as userService from '../../services/user.service';
 import { HTTP_RESPONSE_MESSAGES } from '../../shared/messages';
 import logger from '../../utils';
@@ -90,66 +92,6 @@ export const verifyUser = async (req, res) => {
       data: null,
       httpStatus: httpStatusCode.BAD_REQUEST,
       message: HTTP_RESPONSE_MESSAGES.VERIFICATION.USER_VERIFIED_FAILED
-    };
-  }
-
-  res.send(result);
-};
-
-/**
- * sends email with the unique token attached to the url
- *
- * @param {*} req
- * @param {*} res
- * @param {*} next
- */
-export const forgotPassword = async (req, res) => {
-  logger.info('UserController - forgot password');
-  const reqUser = req.body;
-
-  try {
-    const result = await userService.forgotPassword(reqUser);
-    res.send(result);
-  } catch (error) {
-    logger.error('UserController - forgot password', {
-      meta: error
-    });
-
-    res.boom.BAD_REQUEST(error);
-  }
-};
-
-export const verifyForgotPassword = async (req, res) => {
-  logger.info('UserController - verify forgot password');
-
-  if (!req.params.tokenId) {
-    res.send(
-      HTTP_RESPONSE_MESSAGES.VERIFICATION.USER_VERIFICATION_DATA_NOT_FOUND
-    );
-  }
-
-  let result = {};
-
-  const { tokenId } = req.params;
-
-  try {
-    const data = await verifyToken(tokenId, env.FORGOT_PASSWORD_SECRET_KEY);
-
-    result = {
-      data,
-      httpStatus: httpStatusCode.OK,
-      message:
-        HTTP_RESPONSE_MESSAGES.VERIFICATION
-          .USER_FORGOT_PASSWORD_VERIFIED_SUCCESSFUL
-    };
-  } catch (error) {
-    logger.error(`USER CONTROLLER - Verify Forgot Password Error ${error}`);
-
-    result = {
-      data: null,
-      httpStatus: httpStatusCode.BAD_REQUEST,
-      message:
-        HTTP_RESPONSE_MESSAGES.VERIFICATION.USER_FORGOT_PASSWORD_VERIFIED_FAILED
     };
   }
 

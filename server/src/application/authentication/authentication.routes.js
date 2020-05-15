@@ -2,8 +2,8 @@ import express from 'express';
 import {
   validateLoginRequest,
   validateSignupRequest
-} from '../users/users.validation';
-import * as authenticationController from './auth.controller';
+} from '../authentication/authentication.validation';
+import * as authenticationController from './authentication.controller';
 
 const router = express.Router();
 
@@ -13,6 +13,11 @@ router.post('/login', validateLoginRequest, authenticationController.login);
 
 // router.get('/confirmation/:tokenId', userController.verifyUser);
 
-// router.get('/forgotPassword/:tokenId', userController.verifyForgotPassword);
+router.post('/forgotPassword', authenticationController.forgotPassword);
+
+router.get(
+  '/forgotPassword/:tokenId',
+  authenticationController.verifyForgotPassword
+);
 
 export const authenticationRoutes = router;
