@@ -11,10 +11,7 @@ export const signup = catchAsync(async (req, res, next) => {
   const userResponse = await authService.signup(req.body);
 
   if (checkResponse(userResponse)) {
-    await authService.sendUserVerificationEmail(
-      req.body.username,
-      req.body.email
-    );
+    await authService.sendUserVerificationEmail(req.body.username, req.body.email);
   }
   res.status(userResponse.httpStatus).send(userResponse);
 });
@@ -43,8 +40,6 @@ export const verifyForgotPassword = catchAsync(async (req, res, next) => {
     next(new AppError('No token found', 401));
   }
 
-  const result = {};
-
   const verifyForgotPasswordToken = authService.verifyToken(
     tokenId,
     env.FORGOT_PASSWORD_SECRET_KEY
@@ -61,8 +56,6 @@ export const verifyForgotPassword = catchAsync(async (req, res, next) => {
     data: false,
     httpStatus: httpStatusCodes.BAD_REQUEST
   };
-
-  res.send(result);
 });
 
 export const extractAndVerifyToken = (req, res, next) => {

@@ -33,15 +33,16 @@ const sendErrorProd = (err, res) => {
 const handleJWTError = () => new AppError('Invalid token. Please login', 401);
 
 const errorController = (err, req, res, next) => {
-  err.statusCode = err.statusCode || 500;
-  err.status = err.status || 'error';
+  const error = {};
+  error.statusCode = err.statusCode || 500;
+  error.status = err.status || 'error';
 
   if (process.env.NODE_ENV === 'development') {
     sendErrorDev(err, res);
   } else if (process.env.NODE_ENV === 'production') {
-    let error = { ...err };
-    if (error.name === 'JsonWebTokenError') {
-      error = handleJWTError();
+    let errorProd = { ...err };
+    if (errorProd.name === 'JsonWebTokenError') {
+      errorProd = handleJWTError();
     }
 
     sendErrorProd();

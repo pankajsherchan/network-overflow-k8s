@@ -1,9 +1,6 @@
 import express from 'express';
 import * as userController from './users.controller';
-import {
-  validateGetUserRequest,
-  validateUserUpdateRequest
-} from './users.validation';
+import { validateGetUserRequest, validateUserUpdateRequest } from './users.validation';
 
 const router = express.Router();
 
@@ -20,4 +17,4 @@ router.get('/:username', validateGetUserRequest, userController.getUser);
 // TODO: delete
 // TODO: login
 
-export const userRoutes = router;
+export default router;

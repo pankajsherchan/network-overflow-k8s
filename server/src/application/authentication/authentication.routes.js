@@ -1,10 +1,10 @@
 import express from 'express';
+import * as authenticationController from './authentication.controller';
 import {
   forgotPasswordRequest,
   validateLoginRequest,
   validateSignupRequest
-} from '../authentication/authentication.validation';
-import * as authenticationController from './authentication.controller';
+} from './authentication.validation';
 
 const router = express.Router();
 
@@ -14,15 +14,8 @@ router.post('/login', validateLoginRequest, authenticationController.login);
 
 // router.get('/confirmation/:tokenId', userController.verifyUser);
 
-router.post(
-  '/forgotPassword',
-  forgotPasswordRequest,
-  authenticationController.forgotPassword
-);
+router.post('/forgotPassword', forgotPasswordRequest, authenticationController.forgotPassword);
 
-router.get(
-  '/forgotPassword/:tokenId',
-  authenticationController.verifyForgotPassword
-);
+router.get('/forgotPassword/:tokenId', authenticationController.verifyForgotPassword);
 
-export const authenticationRoutes = router;
+export default router;

@@ -11,12 +11,12 @@ const templates = {
   call_to_action: 'd-2bf18ceba1734ea3aa70d02143590878'
 };
 
-export const sendEmail = data => {
+const sendEmail = data => {
   logger.info('Email Service - Send email');
 
-  const { receiver, sender, templateName, name, verify_account_url, header, text, buttonText } = data;
+  const { receiver, sender, templateName, name, verifyAccountUrl, header, text, buttonText } = data;
 
-  const result = {};
+  let result = {};
 
   const msg = {
     to: receiver,
@@ -24,15 +24,15 @@ export const sendEmail = data => {
     templateId: templates[templateName],
     dynamic_template_data: {
       name,
-      confirm_account_url: verify_account_url,
+      confirm_account_url: verifyAccountUrl,
       header,
       text,
-      c2a_link: verify_account_url,
+      c2a_link: verifyAccountUrl,
       c2a_button: buttonText
     }
   };
 
-  sendGridMail.send(msg, (error, result) => {
+  sendGridMail.send(msg, (error, emailResult) => {
     if (error) {
       console.log('error: ', error);
       logger.error('Email Service - send email fail');
@@ -40,7 +40,7 @@ export const sendEmail = data => {
       throw new AppError('Email sent failed', httpStatusCode.BAD_REQUEST);
     }
 
-    result = { ...result };
+    result = { ...emailResult };
   });
 
   return {
@@ -48,3 +48,5 @@ export const sendEmail = data => {
     httpStatus: httpStatusCode.OK
   };
 };
+
+export default sendEmail;

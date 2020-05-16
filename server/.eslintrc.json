@@ -28,6 +28,7 @@
     "no-unused-vars": ["error", { "argsIgnorePattern": "req|res|next|val" }],
     "arrow-parens": ["error", "as-needed"],
     "no-use-before-define": "off",
-    "object-curly-newline": "off"
+    "object-curly-newline": "off",
+    "implicit-arrow-linebreak": "off"
   }
 }

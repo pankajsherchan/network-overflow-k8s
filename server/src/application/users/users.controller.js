@@ -1,9 +1,6 @@
 import httpStatusCode from 'http-status-codes';
 import env from '../../env';
-import {
-  hashPassword,
-  verifyToken
-} from '../../services/authentication.service';
+import { hashPassword, verifyToken } from '../../services/authentication.service';
 import * as userService from '../../services/user.service';
 import { HTTP_RESPONSE_MESSAGES } from '../../shared/messages';
 import logger from '../../utils';
@@ -40,7 +37,7 @@ export const login = catchAsync(async (req, res) => {
 export const getUser = catchAsync(async (req, res, next) => {
   logger.info('UserController - GetUser');
 
-  const username = req.params.username;
+  const { username } = req.params;
   const result = await userService.getUser({ username });
 
   if (!result || !result.data) {
@@ -60,9 +57,7 @@ export const verifyUser = async (req, res) => {
   logger.info('USER Controller - Verify User');
 
   if (!req.params.tokenId) {
-    res.send(
-      HTTP_RESPONSE_MESSAGES.VERIFICATION.USER_VERIFICATION_DATA_NOT_FOUND
-    );
+    res.send(HTTP_RESPONSE_MESSAGES.VERIFICATION.USER_VERIFICATION_DATA_NOT_FOUND);
   }
 
   let result = {};
@@ -129,8 +124,7 @@ export const changePassword = async (req, res) => {
     result = {
       user,
       httpStatus: httpStatusCode.OK,
-      message:
-        HTTP_RESPONSE_MESSAGES.VERIFICATION.USER_PASSWORD_CHANGE_SUCCESSFUL
+      message: HTTP_RESPONSE_MESSAGES.VERIFICATION.USER_PASSWORD_CHANGE_SUCCESSFUL
     };
   } catch (error) {
     logger.error(`USER CONTROLLER - Verify User Error ${error}`);

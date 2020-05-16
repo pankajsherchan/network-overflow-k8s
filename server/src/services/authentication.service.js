@@ -5,7 +5,7 @@ import AppError from '../application/error/appError';
 import User from '../database/schemas/user.schema';
 import env from '../env';
 import logger from '../utils';
-import { sendEmail } from './email.service';
+import sendEmail from './email.service';
 
 const messages = {
   USER_ALREADY_EXIST: 'User already exist',
@@ -20,7 +20,6 @@ export const signup = async user => {
 
   try {
     const userInDatabase = await User.findOne({ username });
-    console.log('userInDatabase: ', userInDatabase);
     if (userInDatabase) {
       return {
         data: null,
@@ -28,8 +27,6 @@ export const signup = async user => {
         message: messages.USER_ALREADY_EXIST
       };
     }
-
-    console.log('here');
 
     const newUser = new User({
       username,
@@ -65,10 +62,6 @@ export const loginUser = async user => {
     const { email, password } = user;
 
     const userInDatabase = await User.findOne({ email }).select('+password');
-    console.log('userInDatabase: ', userInDatabase);
-
-    const res = await verifyPassword(password, userInDatabase.password);
-    console.log('password verification: ', res);
 
     if (!userInDatabase || !(await verifyPassword(password, userInDatabase.password))) {
       throw new AppError('Incorrect email or password', 401);
@@ -107,7 +100,8 @@ export const forgotPassword = async email => {
   return sendEmail(emailConfig);
 };
 
-const verifyPassword = async (password, encryptPassword) => bcrypt.compare(password, encryptPassword);
+const verifyPassword = async (password, encryptPassword) =>
+  bcrypt.compare(password, encryptPassword);
 
 export const sendUserVerificationEmail = async (username, email) => {
   const userVerificationToken = generateToken(env.VERIFY_USER_SECRET_KEY, username);

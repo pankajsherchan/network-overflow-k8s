@@ -1,15 +1,13 @@
 import express from 'express';
-import { authenticationRoutes } from './application/authentication';
 import { extractAndVerifyToken } from './application/authentication/authentication.controller';
+import * as authenticationRoutes from './application/authentication/authentication.routes';
 import AppError from './application/error/appError';
 import globalErrorHandler from './application/error/error.controller';
-import { userRoutes } from './application/users';
+import * as userRoutes from './application/users';
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
-  return res.send('Hello Hello Bye whad up whad up');
-});
+router.get('/', (req, res) => res.send('Hello Hello Bye whad up whad up'));
 
 router.use('/', authenticationRoutes);
 
@@ -26,4 +24,4 @@ router.all('*', (req, res, next) => {
 // error handling middleware
 router.use(globalErrorHandler);
 
-export const routes = router;
+export default router;
