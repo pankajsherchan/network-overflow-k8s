@@ -3,22 +3,14 @@
     "es6": true,
     "node": true
   },
-  "extends": "eslint:recommended",
+  "extends": ["airbnb-base"],
   "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"
   },
   "parserOptions": {
-    "ecmaVersion": 2018,
+    "ecmaVersion": 11,
     "sourceType": "module"
   },
-  "rules": {
-    "indent": ["error", 2],
-    "linebreak-style": ["error", "unix"],
-    "quotes": ["error", "single"],
-    "semi": ["error", "always"],
-    "newline-before-return": "error",
-    "no-console": "off",
-    "no-else-return": "error"
-  }
+  "rules": {}
 }

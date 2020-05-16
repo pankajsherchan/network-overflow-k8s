@@ -1,6 +1,7 @@
 import {
   Avatar,
   Button,
+  CircularProgress,
   Container,
   Grid,
   Link,
@@ -10,8 +11,11 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { useFormik } from 'formik';
-import React from 'react';
+import React, { useState } from 'react';
 import * as Yup from 'yup';
+import { environment } from '../../environments/environment';
+import useHttpHook from '../../hooks/HttpHook';
+import SimpleDialog from '../../shared/dialog/SimpleDialog';
 
 const useStyles = makeStyles(theme => ({
   signinContainer: {
@@ -49,11 +53,21 @@ const useStyles = makeStyles(theme => ({
   },
   formError: {
     color: 'red'
+  },
+  spinnerContainer: {
+    display: 'flex',
+    justifyContent: 'center'
   }
 }));
 
 const SignIn = () => {
   const classes = useStyles();
+
+  const [showDialog, setShowDialog] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState('');
+  const [dialogTitle, setDialogTitle] = useState('');
+
+  const { isLoading, error, sendRequest, clearError } = useHttpHook();
 
   const signinSchema = Yup.object({
     email: Yup.string().email('Invalid email').required('Required'),
@@ -66,13 +80,54 @@ const SignIn = () => {
       password: ''
     },
     validationSchema: signinSchema,
-    onSubmit: async user => {}
+    onSubmit: async user => {
+      login(user);
+    }
   });
 
-  const login = async user => {};
+  const login = async user => {
+    const url = `${environment.apiUrl}${environment.apis.login}`;
+    const response = await sendRequest(url, 'POST', user, {});
+
+    if (response) {
+      showDialogBox('Success', 'Login successfully');
+    }
+  };
+
+  const hideDialogBox = () => {
+    setShowDialog(false);
+    clearError();
+  };
+
+  const showDialogBox = (title, message) => {
+    setShowDialog(true);
+    setDialogMessage(message);
+    setDialogTitle(title);
+  };
 
   return (
     <Container maxWidth="xs">
+      <div className={classes.spinnerContainer}>
+        {isLoading ? <CircularProgress /> : null}
+      </div>
+
+      {showDialog ? (
+        <SimpleDialog
+          open={showDialog}
+          message={dialogMessage}
+          title={dialogTitle}
+          hide={hideDialogBox}
+        ></SimpleDialog>
+      ) : null}
+
+      {error ? (
+        <SimpleDialog
+          hide={hideDialogBox}
+          title={error.status}
+          message={error.message}
+        ></SimpleDialog>
+      ) : null}
+
       <Grid
         container
         direction="column"

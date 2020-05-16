@@ -65,9 +65,13 @@ export const loginUser = async user => {
   logger.info('UserService - Login user');
 
   try {
-    const { username, password } = user;
+    const { email, password } = user;
 
-    const userInDatabase = await User.findOne({ username }).select('+password');
+    const userInDatabase = await User.findOne({ email }).select('+password');
+    console.log('userInDatabase: ', userInDatabase);
+
+    const res = await verifyPassword(password, userInDatabase.password);
+    console.log('password verification: ', res);
 
     if (
       !userInDatabase ||
@@ -76,11 +80,11 @@ export const loginUser = async user => {
       throw new AppError('Incorrect email or password', 401);
     }
 
-    const token = generateToken(env.LOGIN_USER_SECRET_KEY, username);
+    const token = generateToken(env.LOGIN_USER_SECRET_KEY, email);
 
     return {
-      token,
-      httpStatusCodes: httpStatusCodes.OK
+      data: token,
+      httpStatus: httpStatusCodes.OK
     };
   } catch (error) {
     logger.error(`USER CONTROLLER login user: ${error}`);
