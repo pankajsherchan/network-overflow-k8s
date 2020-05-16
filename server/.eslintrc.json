@@ -12,5 +12,22 @@
     "ecmaVersion": 11,
     "sourceType": "module"
   },
-  "rules": {}
+  "rules": {
+    "comma-dangle": [
+      "error",
+      {
+        "arrays": "never",
+        "objects": "never",
+        "imports": "never",
+        "exports": "never",
+        "functions": "never"
+      }
+    ],
+    "no-console": "warn",
+    "consistent-return": "off",
+    "no-unused-vars": ["error", { "argsIgnorePattern": "req|res|next|val" }],
+    "arrow-parens": ["error", "as-needed"],
+    "no-use-before-define": "off",
+    "object-curly-newline": "off"
+  }
 }

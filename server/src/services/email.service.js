@@ -14,28 +14,19 @@ const templates = {
 export const sendEmail = data => {
   logger.info('Email Service - Send email');
 
-  const {
-    receiver,
-    sender,
-    templateName,
-    name,
-    verify_account_url,
-    header,
-    text,
-    buttonText
-  } = data;
+  const { receiver, sender, templateName, name, verify_account_url, header, text, buttonText } = data;
 
-  let result = {};
+  const result = {};
 
   const msg = {
     to: receiver,
     from: sender,
     templateId: templates[templateName],
     dynamic_template_data: {
-      name: name,
+      name,
       confirm_account_url: verify_account_url,
-      header: header,
-      text: text,
+      header,
+      text,
       c2a_link: verify_account_url,
       c2a_button: buttonText
     }
@@ -43,11 +34,17 @@ export const sendEmail = data => {
 
   sendGridMail.send(msg, (error, result) => {
     if (error) {
+      console.log('error: ', error);
       logger.error('Email Service - send email fail');
 
       throw new AppError('Email sent failed', httpStatusCode.BAD_REQUEST);
     }
+
+    result = { ...result };
   });
 
-  return result;
+  return {
+    data: result,
+    httpStatus: httpStatusCode.OK
+  };
 };

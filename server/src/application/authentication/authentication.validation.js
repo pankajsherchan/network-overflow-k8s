@@ -78,12 +78,34 @@ export const loginValidationSchema = Joi.alternatives().try(
   })
 );
 
+export const forgotPasswordValidationSchema = Joi.alternatives().try(
+  Joi.object().keys({
+    email: Joi.string()
+      .email()
+      .required()
+  })
+);
+
 export const validateLoginRequest = (req, res, next) => {
   if (!req.body) {
     return res.boom.badRequest('User data is required');
   }
 
   const { error } = loginValidationSchema.validate(req.body);
+
+  if (error) {
+    return res.boom.badData(error.message);
+  }
+
+  next();
+};
+
+export const forgotPasswordRequest = (req, res, next) => {
+  if (!req.body) {
+    return res.boom.badRequest('User data is required');
+  }
+
+  const { error } = forgotPasswordValidationSchema.validate(req.body);
 
   if (error) {
     return res.boom.badData(error.message);

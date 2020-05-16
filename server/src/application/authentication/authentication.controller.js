@@ -26,23 +26,15 @@ export const login = catchAsync(async (req, res, next) => {
 /*
  * sends email with the unique token attached to the url
  */
-export const forgotPassword = async (req, res, next) => {
+export const forgotPassword = catchAsync(async (req, res, next) => {
   logger.info('AuthController - forgot password');
-  const reqUser = req.body;
+  const { email } = req.body;
 
-  try {
-    const result = await authService.forgotPassword(reqUser);
-    res.send(result);
-  } catch (error) {
-    logger.error('UserController - forgot password', {
-      meta: error
-    });
+  const result = await authService.forgotPassword(email);
+  res.send(result);
+});
 
-    res.boom.BAD_REQUEST(error);
-  }
-};
-
-export const verifyForgotPassword = async (req, res, next) => {
+export const verifyForgotPassword = catchAsync(async (req, res, next) => {
   logger.info('AuthController - verify forgot password');
 
   const { tokenId } = req.params;
@@ -51,36 +43,30 @@ export const verifyForgotPassword = async (req, res, next) => {
     next(new AppError('No token found', 401));
   }
 
-  let result = {};
+  const result = {};
 
-  try {
-    const verifyForgotPasswordToken = authService.verifyToken(
-      tokenId,
-      env.FORGOT_PASSWORD_SECRET_KEY
-    );
+  const verifyForgotPasswordToken = authService.verifyToken(
+    tokenId,
+    env.FORGOT_PASSWORD_SECRET_KEY
+  );
 
-    if (verifyForgotPasswordToken) {
-      return {
-        data: true,
-        httpStatus: httpStatusCodes.OK
-      };
-    }
-
+  if (verifyForgotPasswordToken) {
     return {
-      data: false,
-      httpStatus: httpStatusCodes.BAD_REQUEST
+      data: true,
+      httpStatus: httpStatusCodes.OK
     };
-  } catch (error) {
-    logger.error(`USER CONTROLLER - Verify Forgot Password Error ${error}`);
-
-    next(new AppError('Could not verify the user'));
   }
 
+  return {
+    data: false,
+    httpStatus: httpStatusCodes.BAD_REQUEST
+  };
+
   res.send(result);
-};
+});
 
 export const extractAndVerifyToken = (req, res, next) => {
-  const bearerHeader = req.headers['authorization'];
+  const bearerHeader = req.headers.authorization;
 
   if (typeof bearerHeader !== 'undefined') {
     const bearer = bearerHeader.split(' ');

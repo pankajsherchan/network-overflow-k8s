@@ -41,19 +41,16 @@ export const signup = async user => {
     const hashedPassword = await hashPassword({ password });
     newUser.password = hashedPassword;
 
-    user = await newUser.save();
+    const savedUser = await newUser.save();
 
-    if (!user) {
-      throw new AppError(
-        messages.USER_CREATED_FAILED,
-        httpStatusCodes.BAD_REQUEST
-      );
+    if (!savedUser) {
+      throw new AppError(messages.USER_CREATED_FAILED, httpStatusCodes.BAD_REQUEST);
     }
 
     logger.info('Userservice - save user - successful');
 
     return {
-      data: user,
+      data: savedUser,
       httpStatus: httpStatusCodes.OK
     };
   } catch (error) {
@@ -73,10 +70,7 @@ export const loginUser = async user => {
     const res = await verifyPassword(password, userInDatabase.password);
     console.log('password verification: ', res);
 
-    if (
-      !userInDatabase ||
-      !(await verifyPassword(password, userInDatabase.password))
-    ) {
+    if (!userInDatabase || !(await verifyPassword(password, userInDatabase.password))) {
       throw new AppError('Incorrect email or password', 401);
     }
 
@@ -92,15 +86,10 @@ export const loginUser = async user => {
   }
 };
 
-export const forgotPassword = async user => {
+export const forgotPassword = async email => {
   logger.info('UserService - Forgot Password');
 
-  const { username, email, firstName, lastName } = user;
-
-  const userForgotPasswordVerificationToken = generateToken(
-    env.FORGOT_PASSWORD_SECRET_KEY,
-    username
-  );
+  const userForgotPasswordVerificationToken = generateToken(env.FORGOT_PASSWORD_SECRET_KEY, email);
 
   const url = `${env.BASE_URL}/forgotPassword/${userForgotPasswordVerificationToken}`;
 
@@ -108,26 +97,20 @@ export const forgotPassword = async user => {
     receiver: email,
     sender: 'pankaj2070.sherchan@gmail.com',
     templateName: 'call_to_action',
-    name: `${firstName} ${lastName}`,
+    name: 'Hello there!!',
     verify_account_url: url,
     header: 'Forgot Password',
     buttonText: 'Reset Password',
-    text:
-      'You are almost there. To reset your password please click the link below.'
+    text: 'You are almost there. To reset your password please click the link below.'
   };
 
   return sendEmail(emailConfig);
 };
 
-const verifyPassword = async (password, encryptPassword) => {
-  return await bcrypt.compare(password, encryptPassword);
-};
+const verifyPassword = async (password, encryptPassword) => bcrypt.compare(password, encryptPassword);
 
 export const sendUserVerificationEmail = async (username, email) => {
-  const userVerificationToken = generateToken(
-    env.VERIFY_USER_SECRET_KEY,
-    username
-  );
+  const userVerificationToken = generateToken(env.VERIFY_USER_SECRET_KEY, username);
 
   const url = `${env.BASE_URL}/confirmation/${userVerificationToken}`;
 
@@ -139,22 +122,18 @@ export const sendUserVerificationEmail = async (username, email) => {
     verify_account_url: url,
     header: 'Account Created',
     buttonText: 'Activate Account',
-    text:
-      'You are almost there. To finish activating your account please click the link below.'
+    text: 'You are almost there. To finish activating your account please click the link below.'
   };
 
   return sendEmail(emailConfig);
 };
 
-export const generateToken = (secretKey, tokenData) => {
-  return jwt.sign({ tokenData }, secretKey, {
+export const generateToken = (secretKey, tokenData) =>
+  jwt.sign({ tokenData }, secretKey, {
     expiresIn: env.TOKEN_EXPIRATION_TIME
   });
-};
 
-export const verifyToken = (token, secretKey) => {
-  return jwt.verify(token, secretKey);
-};
+export const verifyToken = (token, secretKey) => jwt.verify(token, secretKey);
 
 export const extractTokenInfo = (token, secretKey) => {
   jwt.verify(token, secretKey, (error, authData) => {
@@ -182,6 +161,4 @@ export const hashPassword = async ({ password }) => {
   }
 };
 
-const generateSalt = async () => {
-  return bcrypt.genSalt(10);
-};
+const generateSalt = async () => bcrypt.genSalt(10);

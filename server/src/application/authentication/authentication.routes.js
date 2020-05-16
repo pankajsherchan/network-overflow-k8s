@@ -1,5 +1,6 @@
 import express from 'express';
 import {
+  forgotPasswordRequest,
   validateLoginRequest,
   validateSignupRequest
 } from '../authentication/authentication.validation';
@@ -13,7 +14,11 @@ router.post('/login', validateLoginRequest, authenticationController.login);
 
 // router.get('/confirmation/:tokenId', userController.verifyUser);
 
-router.post('/forgotPassword', authenticationController.forgotPassword);
+router.post(
+  '/forgotPassword',
+  forgotPasswordRequest,
+  authenticationController.forgotPassword
+);
 
 router.get(
   '/forgotPassword/:tokenId',

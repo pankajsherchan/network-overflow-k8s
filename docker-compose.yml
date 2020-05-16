@@ -20,7 +20,8 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - /app/node_modules
+      # - /app/node_modules
+      - app-server-nodemodules:/app/node_modules # ! Map to local node_modules volume local development
       - ./server:/app
     links:
       - mongo
@@ -33,4 +34,6 @@ services:
     #   - ./server/data:/data/db
 volumes:
   app-nodemodules:
+    external: true
+  app-server-nodemodules:
     external: true
