@@ -94,18 +94,23 @@ export const verifyForgotPassword = catchAsync(async (req, res, next) => {
   });
 });
 
-export const extractAndVerifyToken = (req, res, next) => {
-  const bearerHeader = req.headers.authorization;
+export const extractAndVerifyToken = catchAsync((req, res, next) => {
+  let token;
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    token = req.headers.authorization.split(' ')[1];
+  }
 
-  if (typeof bearerHeader !== 'undefined') {
-    const bearer = bearerHeader.split(' ');
-    const token = bearer[1];
-    req.token = token;
-    verifyToken(req, res, next);
-  } else {
+  if (!token) {
     return next(new AppError('You are not logged in.', 401));
   }
-};
+
+  if (verifyToken(token)) {
+    // get the user information
+    // check if the user is verified
+  }
+
+  next();
+});
 
 export const verifyToken = (req, res, next) => {
   jwt.verify(req.token, env.LOGIN_USER_SECRET_KEY, (error, authData) => {

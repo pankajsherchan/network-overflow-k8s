@@ -45,7 +45,7 @@ const errorController = (err, req, res, next) => {
       errorProd = handleJWTError();
     }
 
-    sendErrorProd();
+    sendErrorProd(err, res);
   }
 };
 

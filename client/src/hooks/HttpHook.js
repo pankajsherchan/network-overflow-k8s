@@ -1,11 +1,15 @@
 import axios from 'axios';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useContext, useRef, useState } from 'react';
+import AuthContext from '../context/AuthContext';
 
 const useHttpHook = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const [signal, setSignal] = useState(axios.CancelToken.source());
+
+  const context = useContext(AuthContext);
+  console.log('context: ', context);
 
   // won't be reinitialized when the hook rerenders
   const activeHttpRequests = useRef([]);

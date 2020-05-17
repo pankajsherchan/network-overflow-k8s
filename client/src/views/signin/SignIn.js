@@ -11,8 +11,9 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { useFormik } from 'formik';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import * as Yup from 'yup';
+import AuthContext from '../../context/AuthContext';
 import { environment } from '../../environments/environment';
 import useHttpHook from '../../hooks/HttpHook';
 import SimpleDialog from '../../shared/dialog/SimpleDialog';
@@ -69,6 +70,8 @@ const SignIn = () => {
 
   const { isLoading, error, sendRequest, clearError } = useHttpHook();
 
+  const authContext = useContext(AuthContext);
+
   const signinSchema = Yup.object({
     email: Yup.string().email('Invalid email').required('Required'),
     password: Yup.string().required('Required')
@@ -88,8 +91,13 @@ const SignIn = () => {
   const login = async user => {
     const url = `${environment.apiUrl}${environment.apis.login}`;
     const response = await sendRequest(url, 'POST', user, {});
+    console.log('response: ', response);
 
     if (response) {
+      const token = `Bearer  ${response.data}`;
+      localStorage.setItem('token', token);
+      authContext.setIsLoggedIn(true);
+
       showDialogBox('Success', 'Login successfully');
     }
   };
