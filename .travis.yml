@@ -8,19 +8,22 @@ script:
 after_success:
   - docker build -t pankajsherchan/network-overflow-client ./client
   - docker build -t pankajsherchan/network-overflow-nginx ./nginx
+  - docker build -t pankajsherchan/network-overflow-server ./server
+
   # push the docker image to the docker hub
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
   - docker push pankajsherchan/network-overflow-client
   - docker push pankajsherchan/network-overflow-nginx
-deploy:
-  edge: true
-  provider: elasticbeanstalk
-  access_key_id: $AWS_ACCESS_KEY
-  secret_access_key: $AWS_SECRET_KEY
-  region: "us-east-2"
-  app: "network-overflow"
-  env: "NetworkOverflow-env"
-  bucket_name: "elasticbeanstalk-us-east-2-122917187984"
-  bucket_path: "network-overflow"
-  on:
-    branch: master
+  - docker push pankajsherchan/network-overflow-server
+# deploy:
+#   edge: true
+#   provider: elasticbeanstalk
+#   access_key_id: $AWS_ACCESS_KEY
+#   secret_access_key: $AWS_SECRET_KEY
+#   region: "us-east-2"
+#   app: "network-overflow"
+#   env: "NetworkOverflow-env"
+#   bucket_name: "elasticbeanstalk-us-east-2-122917187984"
+#   bucket_path: "network-overflow"
+#   on:
+#     branch: master

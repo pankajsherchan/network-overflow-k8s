@@ -7,5 +7,5 @@ export const environment = {
     userVerification: '/userVerification',
     changePassword: '/changePassword'
   },
-  apiUrl: 'http://localhost:5000'
+  apiUrl: 'http://localhost:3050/api'
 };

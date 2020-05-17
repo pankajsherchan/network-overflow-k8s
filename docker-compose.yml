@@ -12,8 +12,8 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - server
-  server:
+      - api
+  api:
     build:
       dockerfile: Dockerfile.dev
       context: ./server
@@ -32,6 +32,13 @@ services:
       - "27017:27017"
     # volumes:
     #   - ./server/data:/data/db
+  nginx:
+    restart: always
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./nginx
+    ports:
+      - "3050:80"
 volumes:
   app-nodemodules:
     external: true
