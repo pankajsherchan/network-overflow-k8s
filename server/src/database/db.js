@@ -3,7 +3,10 @@ import env from '../env';
 
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(env.MONGO_URI, {
+    const mongoURL = env.MONGO_URI_ATLAS.replace('<username>', env.MONGO_USERNAME)
+      .replace('<password>', env.MONGO_PASSWORD)
+      .replace('<database>', env.MONGO_DATABASE);
+    const conn = await mongoose.connect(mongoURL, {
       useNewUrlParser: true
     });
 
