@@ -21,9 +21,9 @@ deploy:
   access_key_id: $AWS_ACCESS_KEY
   secret_access_key: $AWS_SECRET_KEY
   region: "us-east-2"
-  app: "network-overflow"
-  env: "NetworkOverflow-env"
+  app: "network-overflow-full"
+  env: "NetworkOverflowFull-env"
   bucket_name: "elasticbeanstalk-us-east-2-122917187984"
-  bucket_path: "network-overflow"
+  bucket_path: "network-overflow-full"
   on:
     branch: master
