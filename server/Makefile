@@ -1,5 +1,7 @@
+
 start:
-	docker-compose up -d --build server
+	docker-compose up -d --build server 
+	docker-compose exec server bash npm start 
 
 sh:
 	docker-compose up -d --build server

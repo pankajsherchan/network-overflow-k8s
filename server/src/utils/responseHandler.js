@@ -1,7 +1,7 @@
 import httpStatus from 'http-status-codes';
 
 const checkResponse = response => {
-  if (!response || !response.data || response.status !== httpStatus.OK) {
+  if (!response || !response.data || response.httpStatus !== httpStatus.OK) {
     return false;
   }
 

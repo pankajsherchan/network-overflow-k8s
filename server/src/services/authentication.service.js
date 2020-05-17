@@ -19,7 +19,7 @@ export const signup = async user => {
   const { username, firstName, lastName, email, password } = user;
 
   try {
-    const userInDatabase = await User.findOne({ username });
+    const userInDatabase = await User.findOne({ email });
     if (userInDatabase) {
       return {
         data: null,
@@ -84,14 +84,15 @@ export const forgotPassword = async email => {
 
   const userForgotPasswordVerificationToken = generateToken(env.FORGOT_PASSWORD_SECRET_KEY, email);
 
-  const url = `${env.BASE_URL}/forgotPassword/${userForgotPasswordVerificationToken}`;
+  const url = `${env.FRONTEND_BASE_URL}/forgotPassword/${userForgotPasswordVerificationToken}`;
+  console.log('url: ', url);
 
   const emailConfig = {
     receiver: email,
     sender: 'pankaj2070.sherchan@gmail.com',
     templateName: 'call_to_action',
     name: 'Hello there!!',
-    verify_account_url: url,
+    verifyAccountUrl: url,
     header: 'Forgot Password',
     buttonText: 'Reset Password',
     text: 'You are almost there. To reset your password please click the link below.'
@@ -100,20 +101,65 @@ export const forgotPassword = async email => {
   return sendEmail(emailConfig);
 };
 
-const verifyPassword = async (password, encryptPassword) =>
+export const changePassword = async (email, password) => {
+  logger.info('Auth Service - changePassword');
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw new AppError('User does not exist', 401);
+  }
+
+  user.password = hashPassword(password);
+
+  try {
+    const updatedUser = await User.updateOne({ _id: user._id }, user);
+
+    return {
+      data: updatedUser,
+      httpStatus: httpStatusCodes.OK
+    };
+  } catch (err) {
+    throw new AppError(err, httpStatusCodes.BAD_REQUEST);
+  }
+};
+
+export const updateUserVerified = async email => {
+  logger.info('Auth Service - updateUserVerified');
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw new AppError('User Verification Failed', 401);
+  }
+
+  user.verified = true;
+
+  // TODO: move this logic to user service - update method
+  try {
+    const updatedUser = await User.updateOne({ _id: user._id }, user);
+
+    return {
+      data: updatedUser,
+      httpStatus: httpStatusCodes.OK
+    };
+  } catch (err) {
+    throw new AppError(err, httpStatusCodes.BAD_REQUEST);
+  }
+};
+
+export const verifyPassword = async (password, encryptPassword) =>
   bcrypt.compare(password, encryptPassword);
 
 export const sendUserVerificationEmail = async (username, email) => {
-  const userVerificationToken = generateToken(env.VERIFY_USER_SECRET_KEY, username);
+  const userVerificationToken = generateToken(env.VERIFY_USER_SECRET_KEY, email);
 
-  const url = `${env.BASE_URL}/confirmation/${userVerificationToken}`;
+  const url = `${env.FRONTEND_BASE_URL}/userVerification/${userVerificationToken}`;
 
   const emailConfig = {
     receiver: email,
     sender: 'pankaj2070.sherchan@gmail.com',
     templateName: 'call_to_action',
     name: 'Pankaj Sherchan',
-    verify_account_url: url,
+    verifyAccountUrl: url,
     header: 'Account Created',
     buttonText: 'Activate Account',
     text: 'You are almost there. To finish activating your account please click the link below.'
@@ -143,13 +189,13 @@ export const extractTokenInfo = (token, secretKey) => {
 };
 
 export const hashPassword = async ({ password }) => {
-  logger.info('Security Service - hashPassword');
+  logger.info('authentication Service - hashPassword');
   try {
     const salt = await generateSalt();
 
     return bcrypt.hash(password, salt);
   } catch (error) {
-    logger.error('Security Service - hashPassword', error);
+    logger.error('authentication Service - hashPassword', error);
 
     return error;
   }

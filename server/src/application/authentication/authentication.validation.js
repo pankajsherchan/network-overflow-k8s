@@ -115,7 +115,7 @@ export const forgotPasswordRequest = (req, res, next) => {
 };
 
 export const changePasswordValidationSchema = Joi.object().keys({
-  username: Joi.string()
+  email: Joi.string()
     .required()
     .min(3)
     .max(30),
@@ -125,20 +125,12 @@ export const changePasswordValidationSchema = Joi.object().keys({
       new RegExp(
         '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$' // 1 capital letter, 1 small letter, 1 number, 1 special character, minimum 6 character long
       )
-    ),
-  confirmPassword: Joi.any()
-    .valid(Joi.ref('password'))
-    .required()
-    .error(
-      new Error({
-        message: 'Password must match.'
-      })
     )
 });
 
 export const validateChangePasswordRequest = (req, res, next) => {
   if (!req.body) {
-    return res.boom.badRequest('User forgot password data is required');
+    return res.boom.badRequest('Email or Password is missing');
   }
 
   const { error } = changePasswordValidationSchema.validate(req.body);

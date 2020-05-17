@@ -6,7 +6,7 @@ import { HTTP_RESPONSE_MESSAGES } from '../shared/messages';
 import logger from '../utils';
 import checkResponse from '../utils/responseHandler';
 import { generateToken, hashPassword } from './authentication.service';
-import { sendEmail } from './email.service';
+import sendEmail from './email.service';
 
 const messages = {
   USER_ALREADY_EXIST: 'User already exist',
@@ -104,10 +104,7 @@ export const updateUser = async user => {
 };
 
 export const sendUserVerificationEmail = async (username, email) => {
-  const userVerificationToken = generateToken(
-    env.VERIFY_USER_SECRET_KEY,
-    username
-  );
+  const userVerificationToken = generateToken(env.VERIFY_USER_SECRET_KEY, username);
 
   const url = `${env.BASE_URL}/confirmation/${userVerificationToken}`;
 
@@ -116,11 +113,10 @@ export const sendUserVerificationEmail = async (username, email) => {
     sender: 'pankaj2070.sherchan@gmail.com',
     templateName: 'call_to_action',
     name: 'Pankaj Sherchan',
-    verify_account_url: url,
+    verifyAccountUrl: url,
     header: 'Account Created',
     buttonText: 'Activate Account',
-    text:
-      'You are almost there. To finish activating your account please click the link below.'
+    text: 'You are almost there. To finish activating your account please click the link below.'
   };
 
   return sendEmail(emailConfig);

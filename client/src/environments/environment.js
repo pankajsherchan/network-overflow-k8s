@@ -3,7 +3,9 @@ export const environment = {
   apis: {
     signup: '/signup',
     login: '/login',
-    forgotPassword: '/forgotPassword'
+    forgotPassword: '/forgotPassword',
+    userVerification: '/userVerification',
+    changePassword: '/changePassword'
   },
   apiUrl: 'http://localhost:5000'
 };

@@ -1,6 +1,7 @@
 import {
   Avatar,
   Button,
+  CircularProgress,
   Container,
   Grid,
   Link,
@@ -52,6 +53,10 @@ const useStyles = makeStyles(theme => ({
   },
   formError: {
     color: 'red'
+  },
+  spinnerContainer: {
+    display: 'flex',
+    justifyContent: 'center'
   }
 }));
 
@@ -100,6 +105,10 @@ const ForgotPassword = () => {
 
   return (
     <Container maxWidth="xs">
+      <div className={classes.spinnerContainer}>
+        {isLoading ? <CircularProgress /> : null}
+      </div>
+
       {showDialog ? (
         <SimpleDialog
           open={showDialog}

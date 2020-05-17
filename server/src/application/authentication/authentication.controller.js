@@ -31,6 +31,43 @@ export const forgotPassword = catchAsync(async (req, res, next) => {
   res.send(result);
 });
 
+export const changePassword = catchAsync(async (req, res, next) => {
+  logger.info('AuthController - changePassword');
+  const { email, password } = req.body;
+
+  const result = await authService.changePassword(email, password);
+  res.send(result);
+});
+
+export const verifyUser = catchAsync(async (req, res, next) => {
+  logger.info('AuthController - verify user');
+
+  const { tokenId } = req.params;
+
+  if (!tokenId) {
+    next(new AppError('No token found', 401));
+  }
+
+  const userTokenData = authService.verifyToken(tokenId, env.VERIFY_USER_SECRET_KEY);
+
+  console.log('userTokenData: ', userTokenData);
+
+  if (userTokenData) {
+    // update database
+    await authService.updateUserVerified(userTokenData.tokenData);
+
+    res.send({
+      data: userTokenData,
+      httpStatus: httpStatusCodes.OK
+    });
+  }
+
+  res.send({
+    data: null,
+    httpStatus: httpStatusCodes.UNAUTHORIZED
+  });
+});
+
 export const verifyForgotPassword = catchAsync(async (req, res, next) => {
   logger.info('AuthController - verify forgot password');
 
@@ -40,22 +77,21 @@ export const verifyForgotPassword = catchAsync(async (req, res, next) => {
     next(new AppError('No token found', 401));
   }
 
-  const verifyForgotPasswordToken = authService.verifyToken(
-    tokenId,
-    env.FORGOT_PASSWORD_SECRET_KEY
-  );
+  const forgotPasswordTokenData = authService.verifyToken(tokenId, env.FORGOT_PASSWORD_SECRET_KEY);
 
-  if (verifyForgotPasswordToken) {
-    return {
-      data: true,
+  console.log('verifyForgotPasswordToken: ', forgotPasswordTokenData);
+
+  if (forgotPasswordTokenData) {
+    res.send({
+      data: forgotPasswordTokenData,
       httpStatus: httpStatusCodes.OK
-    };
+    });
   }
 
-  return {
-    data: false,
-    httpStatus: httpStatusCodes.BAD_REQUEST
-  };
+  res.send({
+    data: null,
+    httpStatus: httpStatusCodes.UNAUTHORIZED
+  });
 });
 
 export const extractAndVerifyToken = (req, res, next) => {

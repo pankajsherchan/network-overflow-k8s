@@ -1,9 +1,9 @@
 import express from 'express';
 import { extractAndVerifyToken } from './application/authentication/authentication.controller';
-import * as authenticationRoutes from './application/authentication/authentication.routes';
+import authenticationRoutes from './application/authentication/authentication.routes';
 import AppError from './application/error/appError';
 import globalErrorHandler from './application/error/error.controller';
-import * as userRoutes from './application/users';
+import userRoutes from './application/users/users.routes';
 
 const router = express.Router();
 

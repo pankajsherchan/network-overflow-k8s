@@ -6,11 +6,13 @@ import Header from './components/ui/header/Header';
 import theme from './components/ui/Theme';
 import Events from './views/events/Events';
 import ForgotPassword from './views/forgot-password/ForgotPassword';
+import VerifyForgotPassword from './views/forgot-password/verify-forgot-password/VerifyForgotPassword';
 import Home from './views/home/Home';
 import Jobs from './views/jobs/Jobs';
 import Roommates from './views/roommates/Roommates';
 import SignIn from './views/signin/SignIn';
 import SignUp from './views/signup/SignUp';
+import SignupConfirmation from './views/signup/signup-confirmation/SignupConfirmation';
 
 const App = () => {
   const [selectedServiceRouteIndex, setSelectedServiceRouteIndex] = useState(0);
@@ -38,8 +40,19 @@ const App = () => {
           <Route exact path="/about" component={() => <div> about </div>} />
           <Route exact path="/contact" component={() => <div> contact </div>} />
           <Route exact path="/signup" component={SignUp} />
+          <Route
+            exact
+            path="/userVerification/:tokenId"
+            component={SignupConfirmation}
+          />
           <Route exact path="/signin" component={SignIn} />
           <Route exact path="/forgotpassword" component={ForgotPassword} />
+          <Route
+            exact
+            path="/forgotpassword/:tokenId"
+            component={VerifyForgotPassword}
+          />
+
           <Route exact path="/roommates" component={Roommates} />
           <Route exact path="/jobs" component={Jobs} />
           <Route exact path="/events" component={Events} />

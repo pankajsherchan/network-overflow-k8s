@@ -30,25 +30,26 @@ const useHttpHook = () => {
 
         // mapping response object to api response
         const res = response.data;
+        console.log('res: ', res);
 
         setIsLoading(false);
         if (res.httpStatus === 200 && res.data) {
-          console.log('I should be here');
-
           return res;
         } else if (res.httpStatus === 200 && !res.data && res.message) {
           setError({ message: res.message, status: 'Error' });
         }
       } catch (error) {
+        console.log('error.response: ', error.response);
         setIsLoading(false);
-        const errorInfo = error.response.data;
+        const errorInfo = error.response ? error.response.data : null;
 
         if (axios.isCancel(error)) {
           console.log('error: ', error.message); // => prints: Api is being canceled
         }
         setError({
-          message:
-            errorInfo.message || 'Something went wrong. Please try again',
+          message: errorInfo
+            ? errorInfo.message
+            : 'Something went wrong. Please try again',
           status: 'Error'
         });
       }
