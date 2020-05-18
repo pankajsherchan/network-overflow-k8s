@@ -23,15 +23,15 @@ services:
       - /app/node_modules
       # - app-server-nodemodules:/app/node_modules # ! Map to local node_modules volume local development
       - ./server:/app
-    links:
-      - mongo
-  mongo:
-    image: mongo
-    restart: always
-    ports:
-      - "27017:27017"
-    # volumes:
-    #   - ./server/data:/data/db
+  #   links:
+  #     - mongo
+  # mongo:
+  #   image: mongo
+  #   restart: always
+  #   ports:
+  #     - "27017:27017"
+  # volumes:
+  #   - ./server/data:/data/db
   nginx:
     restart: always
     build:

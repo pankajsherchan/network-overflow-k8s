@@ -22,6 +22,11 @@ const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState({});
 
+  // useEffect(() => {
+  //   if (localStorage.get('token')) {
+  //   }
+  // }, []);
+
   return (
     <AuthContext.Provider
       value={{
