@@ -1,20 +1,18 @@
 import express from 'express';
 import * as userController from './users.controller';
-import { validateGetUserRequest, validateUserUpdateRequest } from './users.validation';
+import {
+  validateAddUserRequest,
+  validateDeleteUserRequest,
+  validateGetUserRequest,
+  validateUpdateUserRequest
+} from './users.validation';
 
 const router = express.Router();
 
-router.put('/', validateUserUpdateRequest, userController.updateUser);
-
+router.get('/', validateGetUserRequest, userController.getUser);
+router.post('/', validateAddUserRequest, userController.addUser);
+router.put('/', validateUpdateUserRequest, userController.updateUser);
+router.delete('/', validateDeleteUserRequest, userController.deleteUser);
 router.get('/:username', validateGetUserRequest, userController.getUser);
-
-// router.post(
-//   '/changePassword',
-//   validateChangePasswordRequest,
-//   userController.changePassword
-// );
-
-// TODO: delete
-// TODO: login
 
 export default router;
