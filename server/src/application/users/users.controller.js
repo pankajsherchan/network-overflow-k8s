@@ -26,13 +26,19 @@ export const updateUser = catchAsync(async (req, res) => {
   res.send(result);
 });
 
+export const getUsers = catchAsync(async (req, res, next) => {
+  logger.info('UserController - GetUsers');
+  res.send(await userService.getUsers(req.query));
+});
+
 export const getUser = catchAsync(async (req, res, next) => {
   logger.info('UserController - GetUser');
 
   const { username } = req.params;
-  const userResponse = await userService.getUser({ username });
+  const userResponse = await userService.getUser(username);
+  console.log('userResponse: ', userResponse);
 
-  if (checkResponse(userResponse)) {
+  if (!checkResponse(userResponse)) {
     return next(
       new AppError(`No user with username ${username} found`, httpStatusCodes.BAD_REQUEST)
     );

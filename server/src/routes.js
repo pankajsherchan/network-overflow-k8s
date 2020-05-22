@@ -11,7 +11,7 @@ router.get('/', (req, res) => res.send('Hello Hello Bye whad up whad up'));
 
 router.use('/', authenticationRoutes);
 
-router.use('/api/user', userRoutes);
+router.use('/user', userRoutes);
 
 router.use('/protected', extractAndVerifyToken, (req, res, next) => {});
 

@@ -9,7 +9,7 @@ import {
 
 const router = express.Router();
 
-router.get('/', validateGetUserRequest, userController.getUser);
+router.get('/', userController.getUsers);
 router.post('/', validateAddUserRequest, userController.addUser);
 router.put('/', validateUpdateUserRequest, userController.updateUser);
 router.delete('/', validateDeleteUserRequest, userController.deleteUser);

@@ -3,22 +3,22 @@ import mongoose from 'mongoose';
 const UserSchema = new mongoose.Schema({
   firstName: {
     type: String,
-    required: true
+    required: [true, 'Firstname is required']
   },
   lastName: {
     type: String,
-    required: true
+    required: [true, 'Lastname is required']
   },
   username: {
     type: String,
     required: true,
-    unique: true
+    unique: [true, 'Username is required']
   },
   email: {
     type: String,
     required: true,
     unique: true,
-    lowercase: true
+    lowercase: [true, 'Email is required']
   },
   password: {
     type: String,
@@ -30,11 +30,17 @@ const UserSchema = new mongoose.Schema({
   },
   verified: {
     type: Boolean,
-    default: false,
-    required: true
+    default: false
   }
 });
 
 const User = mongoose.model('User', UserSchema);
+
+// virtual populates the events
+UserSchema.virtual('events', {
+  ref: 'Event',
+  foreignField: 'attendees',
+  localField: '_id'
+});
 
 export default User;

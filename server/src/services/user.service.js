@@ -5,6 +5,7 @@ import env from '../env';
 import logger from '../utils';
 import { generateToken, hashPassword } from './authentication.service';
 import sendEmail from './email.service';
+import { addOne, deleteOne, getAll, updateOne } from './serviceHelper';
 
 const messages = {
   USER_ALREADY_EXIST: 'User already exist',
@@ -14,18 +15,7 @@ const messages = {
   USER_DELETE_FAILED: 'User delete failed. Please try again'
 };
 
-export const getUsers = async () => {
-  logger.info('User Service - GetUsers');
-
-  try {
-    return {
-      data: await User.find(),
-      httpStatus: httpStatusCodes.OK
-    };
-  } catch (error) {
-    throw new AppError('Could not get users', httpStatusCodes.BAD_REQUEST);
-  }
-};
+export const getUsers = async reqQuery => await getAll(User, reqQuery);
 
 export const getUser = async username => {
   logger.info('User Service - GetUser', { meta: username });
@@ -43,7 +33,7 @@ export const getUser = async username => {
   }
 };
 
-export const createUser = async user => {
+export const addUser = async user => {
   logger.info('UserService - Create User');
 
   const { username, firstName, lastName, email, password } = user;
@@ -58,45 +48,12 @@ export const createUser = async user => {
   const hashedPassword = await hashPassword({ password });
   newUser.password = hashedPassword;
 
-  try {
-    logger.info('User service - create user - successful');
-
-    return {
-      data: await newUser.save(),
-      httpStatus: httpStatusCodes.OK
-    };
-  } catch (error) {
-    throw new AppError(messages.USER_CREATED_FAILED, httpStatusCodes.BAD_REQUEST);
-  }
+  return await addOne(User, newUser);
 };
 
-export const updateUser = async user => {
-  logger.info('User Service - update user');
-  try {
-    const updatedUser = await User.updateOne({ _id: user._id }, user);
+export const updateUser = async (id, user) => await updateOne(User, id, user);
 
-    return {
-      data: updatedUser,
-      httpStatus: httpStatusCodes.OK
-    };
-  } catch (err) {
-    throw new AppError(messages.USER_UPDATE_FAILED, httpStatusCodes.BAD_REQUEST);
-  }
-};
-
-export const deleteUser = async id => {
-  logger.info('User Service - delete user');
-  try {
-    const deletedUser = await User.findByIdAndDelete(id);
-
-    return {
-      data: deletedUser,
-      httpStatus: httpStatusCodes.OK
-    };
-  } catch (err) {
-    throw new AppError(messages.USER_DELETE_FAILED, httpStatusCodes.BAD_REQUEST);
-  }
-};
+export const deleteUser = async id => deleteOne(User, id);
 
 export const sendUserVerificationEmail = async (username, email) => {
   const userVerificationToken = generateToken(env.VERIFY_USER_SECRET_KEY, username);
