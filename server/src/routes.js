@@ -1,9 +1,8 @@
 import express from 'express';
-import { extractAndVerifyToken } from './application/authentication/authentication.controller';
-import authenticationRoutes from './application/authentication/authentication.routes';
-import AppError from './application/error/appError';
-import globalErrorHandler from './application/error/error.controller';
-import userRoutes from './application/users/users.routes';
+import { authenticationController, authenticationRoutes } from './application/authentication';
+import { AppError, errorController as globalErrorHandler } from './application/error';
+import { eventRoutes } from './application/events';
+import { userRoutes } from './application/users';
 
 const router = express.Router();
 
@@ -13,7 +12,9 @@ router.use('/', authenticationRoutes);
 
 router.use('/user', userRoutes);
 
-router.use('/protected', extractAndVerifyToken, (req, res, next) => {});
+router.use('/event', eventRoutes);
+
+router.use('/protected', authenticationController.extractAndVerifyToken, (req, res, next) => {});
 
 router.all('*', (req, res, next) => {
   const err = new AppError(`Can't find ${req.originalUrl} on this server`, 404);

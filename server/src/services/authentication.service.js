@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import AppError from '../application/error/appError';
 import User from '../database/schemas/user.schema';
 import env from '../env';
-import logger from '../utils';
+import { logger } from '../utils';
 import sendEmail from './email.service';
 
 const messages = {

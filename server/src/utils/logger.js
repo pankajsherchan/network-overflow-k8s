@@ -2,12 +2,9 @@ import winston from 'winston';
 import mongoTransport from 'winston-mongodb'; // needed for transports.MongoDB
 import env from '../env';
 
-export const logger = winston.createLogger({
+const logger = winston.createLogger({
   levels: winston.config.syslog.levels,
-  format: winston.format.combine(
-    winston.format.colorize(),
-    winston.format.json()
-  ),
+  format: winston.format.combine(winston.format.colorize(), winston.format.json()),
   defaultMeta: {},
   transports: [
     new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
@@ -25,3 +22,5 @@ if (env.NODE_ENV !== 'production') {
 }
 
 logger.info('Log connection to MongoDB', mongoTransport);
+
+export default logger;

@@ -1,6 +1,6 @@
 import httpStatus from 'http-status-codes';
 
-const checkResponse = response => {
+const checkResponseHandler = response => {
   if (!response || !response.data || response.httpStatus !== httpStatus.OK) {
     return false;
   }
@@ -8,4 +8,4 @@ const checkResponse = response => {
   return true;
 };
 
-export default checkResponse;
+export default checkResponseHandler;

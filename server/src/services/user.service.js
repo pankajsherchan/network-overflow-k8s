@@ -2,18 +2,10 @@ import httpStatusCodes from 'http-status-codes';
 import AppError from '../application/error/appError';
 import User from '../database/schemas/user.schema';
 import env from '../env';
-import logger from '../utils';
+import { logger } from '../utils';
 import { generateToken, hashPassword } from './authentication.service';
 import sendEmail from './email.service';
 import { addOne, deleteOne, getAll, updateOne } from './serviceHelper';
-
-const messages = {
-  USER_ALREADY_EXIST: 'User already exist',
-  USER_CREATED_FAILED: 'User creation failed. Please try again',
-  USER_CREATED_SUCCESS: 'User created successfully',
-  USER_UPDATE_FAILED: 'User update failed. Please try again',
-  USER_DELETE_FAILED: 'User delete failed. Please try again'
-};
 
 export const getUsers = async reqQuery => await getAll(User, reqQuery);
 
@@ -55,7 +47,7 @@ export const updateUser = async (id, user) => await updateOne(User, id, user);
 
 export const deleteUser = async id => deleteOne(User, id);
 
-export const sendUserVerificationEmail = async (username, email) => {
+export const sendUserAddVerificationEmail = async (username, email) => {
   const userVerificationToken = generateToken(env.VERIFY_USER_SECRET_KEY, username);
 
   const url = `${env.BASE_URL}/confirmation/${userVerificationToken}`;

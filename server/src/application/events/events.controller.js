@@ -1,21 +1,30 @@
-import httpStatusCodes from 'http-status-codes';
-import Event from '../../database/schemas/event.schema';
-import catchAsync from '../../utils/catchAsync';
-import { logger } from '../../utils/logger';
-import checkResponse from '../../utils/responseHandler';
-import AppError from '../error/appError';
+import { eventService } from '../../services';
+import { catchAsync, logger } from '../../utils';
 
 export const getEvent = catchAsync(async (req, res, next) => {
   logger.info('EventController - GetEvent');
-
-  const eventResponse = await Event.findById(req.params.id).populate('attendees');
-
-  if (!checkResponse(eventResponse)) {
-    return next(new AppError('No event with that ID is found', httpStatusCodes.BAD_REQUEST));
-  }
-
-  res.send(eventResponse);
+  res.send(await eventService.getEvent(req.params.id));
 });
-export const addEvent = () => null;
-export const updateEvent = () => null;
-export const deleteEvent = () => null;
+
+export const getEvents = catchAsync(async (req, res, next) => {
+  logger.info('EventController - GetEvent');
+  res.send(await eventService.getEvents(req.query));
+});
+
+export const addEvent = () =>
+  catchAsync(async (req, res, next) => {
+    logger.info('EventController - AddEvent');
+    res.send(await eventService.addEvent(req.body));
+  });
+
+export const updateEvent = () =>
+  catchAsync(async (req, res, next) => {
+    logger.info('EventController - UpdateEvent');
+    res.send(await eventService.updateEvent(req.params.id, req.body));
+  });
+
+export const deleteEvent = () =>
+  catchAsync(async (req, res, next) => {
+    logger.info('EventController - DeleteEvent');
+    res.send(await eventService.deleteEvent(req.params.id));
+  });

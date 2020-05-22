@@ -1,8 +1,6 @@
 import httpStatusCodes from 'http-status-codes';
-import * as userService from '../../services/user.service';
-import logger from '../../utils';
-import catchAsync from '../../utils/catchAsync';
-import checkResponse from '../../utils/responseHandler';
+import { userService } from '../../services';
+import { catchAsync, checkResponseHandler, logger } from '../../utils';
 import AppError from '../error/appError';
 
 export const addUser = catchAsync(async (req, res, next) => {
@@ -12,7 +10,7 @@ export const addUser = catchAsync(async (req, res, next) => {
 
   const userExists = await userService.getUser(username);
 
-  if (checkResponse(userExists)) {
+  if (checkResponseHandler(userExists)) {
     return next(new AppError('User already exits', 404));
   }
 
@@ -38,7 +36,7 @@ export const getUser = catchAsync(async (req, res, next) => {
   const userResponse = await userService.getUser(username);
   console.log('userResponse: ', userResponse);
 
-  if (!checkResponse(userResponse)) {
+  if (!checkResponseHandler(userResponse)) {
     return next(
       new AppError(`No user with username ${username} found`, httpStatusCodes.BAD_REQUEST)
     );

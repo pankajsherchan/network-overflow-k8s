@@ -1,16 +1,14 @@
 import httpStatusCodes from 'http-status-codes';
 import jwt from 'jsonwebtoken';
 import env from '../../env';
-import * as authService from '../../services/authentication.service';
-import logger from '../../utils';
-import catchAsync from '../../utils/catchAsync';
-import checkResponse from '../../utils/responseHandler';
+import { authService } from '../../services';
+import { catchAsync, checkResponseHandler, logger } from '../../utils';
 import AppError from '../error/appError';
 
 export const signup = catchAsync(async (req, res, next) => {
   const userResponse = await authService.signup(req.body);
 
-  if (checkResponse(userResponse)) {
+  if (checkResponseHandler(userResponse)) {
     await authService.sendUserVerificationEmail(req.body.username, req.body.email);
   }
   res.status(userResponse.httpStatus).send(userResponse);

@@ -1,7 +1,6 @@
 import httpStatusCodes from 'http-status-codes';
 import AppError from '../application/error/appError';
-import logger from '../utils';
-import APIFeatures from '../utils/apiFeature';
+import { APIFeatures, logger } from '../utils';
 
 export const addOne = async (Model, value) => {
   logger.info('add one');
