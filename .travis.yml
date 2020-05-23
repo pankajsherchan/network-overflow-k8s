@@ -17,12 +17,12 @@ after_success:
   - docker push pankajsherchan/network-overflow-server
 deploy:
   provider: elasticbeanstalk
-  access_key_id: $AWS_ACCESS_KEY
-  secret_access_key: $AWS_SECRET_KEY
   region: us-east-2
-  app: static-app
-  env: StaticApp-env
+  app: multi-docker
+  env: MultiDocker-env
   bucket_name: elasticbeanstalk-us-east-2-122917187984
-  bucket_path: static-app
+  bucket_path: multi-docker
   on:
     branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
