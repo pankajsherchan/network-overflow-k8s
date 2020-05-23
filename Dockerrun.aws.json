@@ -5,14 +5,29 @@
       "name": "client",
       "image": "pankajsherchan/network-overflow-client",
       "hostname": "client",
+      "essential": false,
+      "memory": 128
+    },
+    {
+      "name": "server",
+      "image": "pankajsherchan/network-overflow-server",
+      "hostname": "api",
+      "essential": false,
+      "memory": 128
+    },
+    {
+      "name": "nginx",
+      "image": "pankajsherchan/network-overflow-nginx",
+      "hostname": "nginx",
       "essential": true,
-      "memory": 128,
       "portMappings": [
         {
           "hostPort": 80,
           "containerPort": 80
         }
-      ]
+      ],
+      "links": ["client", "server"],
+      "memory": 128
     }
   ]
 }

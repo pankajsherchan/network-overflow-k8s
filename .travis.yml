@@ -19,10 +19,10 @@ deploy:
   provider: elasticbeanstalk
   access_key_id: $AWS_ACCESS_KEY
   secret_access_key: $AWS_SECRET_KEY
-  region: "us-east-2"
-  app: "static-app"
-  env: "StaticApp-env"
-  bucket_name: "elasticbeanstalk-us-east-2-122917187984"
-  bucket_path: "static-app"
+  region: us-east-2
+  app: static-app
+  env: StaticApp-env
+  bucket_name: elasticbeanstalk-us-east-2-122917187984
+  bucket_path: static-app
   on:
     branch: master
