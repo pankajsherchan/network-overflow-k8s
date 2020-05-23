@@ -16,14 +16,13 @@ after_success:
   - docker push pankajsherchan/network-overflow-nginx
   - docker push pankajsherchan/network-overflow-server
 deploy:
-  edge: true
   provider: elasticbeanstalk
   access_key_id: $AWS_ACCESS_KEY
   secret_access_key: $AWS_SECRET_KEY
   region: "us-east-2"
-  app: "network-overflow-full"
-  env: "NetworkOverflowFull-env"
+  app: "static-app"
+  env: "StaticApp-env"
   bucket_name: "elasticbeanstalk-us-east-2-122917187984"
-  bucket_path: "network-overflow-full"
+  bucket_path: "static-app"
   on:
     branch: master
