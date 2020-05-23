@@ -6,7 +6,13 @@
       "image": "pankajsherchan/network-overflow-client",
       "hostname": "client",
       "essential": true,
-      "memory": 128
+      "memory": 128,
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 80
+        }
+      ]
     }
   ]
 }
