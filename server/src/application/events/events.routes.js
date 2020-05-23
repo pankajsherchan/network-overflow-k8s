@@ -9,8 +9,9 @@ import {
 
 const router = express.Router();
 
+router.get('/', eventController.getEvents);
+router.get('/:id', validateGetEventRequest, eventController.getEvent);
 router.put('/:id', validateUpdateEventRequest, eventController.updateEvent);
-router.get('/:id', validateGetEventRequest, eventController.getEvents);
 router.post('/', validateAddEventRequest, eventController.addEvent);
 router.delete('/:id', validateDeleteEventRequest, eventController.deleteEvent);
 

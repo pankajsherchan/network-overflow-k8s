@@ -3,8 +3,7 @@ import mongoose from 'mongoose';
 const EventSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, 'Event must have a name'],
-    unique: true
+    required: [true, 'Event must have a name']
   },
   price: {
     type: Number,

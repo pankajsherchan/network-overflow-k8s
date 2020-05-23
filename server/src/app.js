@@ -5,9 +5,7 @@ import boom from 'express-boom';
 import mongoSanitize from 'express-mongo-sanitize';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
-import morgan from 'morgan';
 import xss from 'xss-clean';
-import env from './env';
 import routes from './routes';
 
 const app = express();
@@ -22,9 +20,9 @@ function setup() {
 
   app.use(cors());
 
-  if (env.NODE_ENV === 'development') {
-    app.use(morgan('dev'));
-  }
+  // if (env.NODE_ENV === 'development') {
+  //   app.use(morgan('dev'));
+  // }
 
   // limits the requests
   const limiter = rateLimit({

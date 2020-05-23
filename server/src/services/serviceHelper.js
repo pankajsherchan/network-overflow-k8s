@@ -12,21 +12,23 @@ export const addOne = async (Model, value) => {
       httpStatus: httpStatusCodes.OK
     };
   } catch (error) {
+    logger.info('Error in adding one');
+    logger.error('add one error', error);
     throw new AppError(
-      'Something went wrong. Could not add the document.Please try again',
+      error.message || 'Something went wrong. Could not add the document.Please try again',
       httpStatusCodes.BAD_REQUEST
     );
   }
 };
 
 export const updateOne = async (Model, id, updated) => {
-  logger.info('update one');
   try {
     const doc = await Model.findByIdAndUpdate(id, updated, {
       new: true,
       runValidators: true
     });
 
+    logger.info('update one', doc);
     if (!doc) {
       throw new AppError(`Could not find document with id ${id}`, httpStatusCodes.BAD_REQUEST);
     }
@@ -35,8 +37,13 @@ export const updateOne = async (Model, id, updated) => {
       data: updated,
       httpStatus: httpStatusCodes.OK
     };
-  } catch (err) {
-    throw new AppError('Update failed. Please try again', httpStatusCodes.BAD_REQUEST);
+  } catch (error) {
+    logger.info('Error in updating one');
+    logger.error('updating error', error);
+    throw new AppError(
+      error.message || 'Update failed. Please try again',
+      httpStatusCodes.BAD_REQUEST
+    );
   }
 };
 
@@ -49,8 +56,13 @@ export const deleteOne = async (Model, id) => {
       data: deletedEntity,
       httpStatus: httpStatusCodes.OK
     };
-  } catch (err) {
-    throw new AppError(`Could not find document with id ${id}`, httpStatusCodes.BAD_REQUEST);
+  } catch (error) {
+    logger.info('Error in deleting one');
+    logger.error('deleting error', error);
+    throw new AppError(
+      error.message || `Could not find document with id ${id}`,
+      httpStatusCodes.BAD_REQUEST
+    );
   }
 };
 
@@ -73,7 +85,12 @@ export const getOne = async (Model, id, populateOptions) => {
       httpStatus: httpStatusCodes.OK
     };
   } catch (error) {
-    throw new AppError('Something went wrong. Please try again', httpStatusCodes.BAD_REQUEST);
+    logger.info('Error in getting one');
+    logger.error('getting error', error);
+    throw new AppError(
+      error.message || 'Something went wrong. Please try again',
+      httpStatusCodes.BAD_REQUEST
+    );
   }
 };
 
@@ -92,6 +109,8 @@ export const getAll = async (Model, reqQuery) => {
       httpStatus: httpStatusCodes.OK
     };
   } catch (error) {
-    throw new AppError('Could not get documents', httpStatusCodes.BAD_REQUEST);
+    logger.info('Error in getting all');
+    logger.error('getting all error', error);
+    throw new AppError(error.message || 'Could not get documents', httpStatusCodes.BAD_REQUEST);
   }
 };
