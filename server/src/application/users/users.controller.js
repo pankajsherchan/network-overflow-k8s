@@ -1,5 +1,5 @@
 import httpStatusCodes from 'http-status-codes';
-import { userService } from '../../services';
+import * as userService from '../../services';
 import { catchAsync, checkResponseHandler, logger } from '../../utils';
 import AppError from '../error/appError';
 

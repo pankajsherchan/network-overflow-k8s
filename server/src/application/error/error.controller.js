@@ -5,7 +5,7 @@ const sendErrorDev = (err, res) => {
   logger.info('Error Controller - send error dev');
   console.log('err: ', err);
 
-  res.status(err.statusCode).json({
+  res.status(err.statusCode || 500).json({
     status: err.status,
     error: err,
     message: err.message,

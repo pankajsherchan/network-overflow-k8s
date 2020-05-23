@@ -44,7 +44,7 @@ export const signup = async user => {
       throw new AppError(messages.USER_CREATED_FAILED, httpStatusCodes.BAD_REQUEST);
     }
 
-    logger.info('Userservice - save user - successful');
+    logger.info('User service - save user - successful');
 
     return {
       data: savedUser,

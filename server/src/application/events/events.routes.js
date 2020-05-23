@@ -1,4 +1,5 @@
 import express from 'express';
+import * as authenticationController from '../authentication';
 import * as eventController from './events.controller';
 import {
   validateAddEventRequest,
@@ -11,8 +12,23 @@ const router = express.Router();
 
 router.get('/', eventController.getEvents);
 router.get('/:id', validateGetEventRequest, eventController.getEvent);
-router.put('/:id', validateUpdateEventRequest, eventController.updateEvent);
-router.post('/', validateAddEventRequest, eventController.addEvent);
-router.delete('/:id', validateDeleteEventRequest, eventController.deleteEvent);
+router.put(
+  '/:id',
+  authenticationController.extractAndVerifyToken,
+  validateUpdateEventRequest,
+  eventController.updateEvent
+);
+router.post(
+  '/',
+  authenticationController.extractAndVerifyToken,
+  validateAddEventRequest,
+  eventController.addEvent
+);
+router.delete(
+  '/:id',
+  authenticationController.extractAndVerifyToken,
+  validateDeleteEventRequest,
+  eventController.deleteEvent
+);
 
 export default router;

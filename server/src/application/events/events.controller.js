@@ -1,4 +1,4 @@
-import { eventService } from '../../services';
+import * as eventService from '../../services';
 import { catchAsync, logger } from '../../utils';
 
 export const getEvent = catchAsync(async (req, res, next) => {

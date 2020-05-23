@@ -1,7 +1,7 @@
 import httpStatusCodes from 'http-status-codes';
 import jwt from 'jsonwebtoken';
 import env from '../../env';
-import { authService } from '../../services';
+import * as authService from '../../services';
 import { catchAsync, checkResponseHandler, logger } from '../../utils';
 import AppError from '../error/appError';
 
@@ -92,7 +92,7 @@ export const verifyForgotPassword = catchAsync(async (req, res, next) => {
   });
 });
 
-export const extractAndVerifyToken = catchAsync((req, res, next) => {
+export const extractAndVerifyToken = (req, res, next) => {
   let token;
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     token = req.headers.authorization.split(' ')[1];
@@ -102,22 +102,21 @@ export const extractAndVerifyToken = catchAsync((req, res, next) => {
     return next(new AppError('You are not logged in.', 401));
   }
 
-  if (verifyToken(token)) {
+  if (verifyToken(token, env.LOGIN_USER_SECRET_KEY)) {
     // get the user information
     // check if the user is verified
+
+    next();
   }
 
   next();
-});
+};
 
-export const verifyToken = (req, res, next) => {
-  jwt.verify(req.token, env.LOGIN_USER_SECRET_KEY, (error, authData) => {
+export const verifyToken = (token, secretKey) => {
+  jwt.verify(token, secretKey, (error, authData) => {
     if (error) {
-      next(new AppError('Invalid Token', 401));
-    } else {
-      res.status(200).send({
-        data: authData
-      });
+      return false;
     }
+    return true;
   });
 };
