@@ -21,15 +21,13 @@ export const validateGetEventRequest = (req, res, next) => {
 
 export const eventAddEventValidationSchema = Joi.object().keys({
   file: Joi.object().keys({
-    filename: Joi.string().required(),
+    filedname: Joi.string().required(),
     fieldname: Joi.string().required()
   }),
   body: Joi.object().keys({
     name: Joi.string().required(),
     price: Joi.number().required(),
     type: Joi.string(),
-    imageCover: Joi.string().required(),
-    images: Joi.array().items(Joi.string()),
     createdDate: Joi.date().required(),
     street: Joi.string().required(),
     city: Joi.string().required(),

@@ -34,14 +34,14 @@ export const uploadEventImage = upload.fields([
   { name: 'images', maxCount: 4 }
 ]);
 
-export const resizeImages = (req, res, next) => {
+export const resizeImages = async (req, res, next) => {
   if (!req.files) {
     next();
   }
 
-  const coverImageName = req.files.imageCover[0].originalname;
+  const coverImageName = `events-${Date.now()}-${req.files.imageCover[0].originalname}`;
 
-  sharp(req.files.imageCover[0].buffer)
+  await sharp(req.files.imageCover[0].buffer)
     .resize(500, 500)
     .toFormat('jpeg')
     .jpeg({ quality: 90 })
@@ -49,19 +49,21 @@ export const resizeImages = (req, res, next) => {
 
   req.body.imageCover = coverImageName;
 
-  const imagesName = [];
+  req.body.images = [];
 
-  req.files.images.map(image => {
-    sharp(image.buffer)
-      .resize(500, 500)
-      .toFormat('jpeg')
-      .jpeg({ quality: 90 })
-      .toFile(`public/image/events/${image.originalname}`);
+  await Promise.all(
+    req.files.images.map(async image => {
+      const imageName = `events-${Date.now()}-${image.originalname}`;
 
-    imagesName.push(image.originalname);
-  });
+      await sharp(image.buffer)
+        .resize(500, 500)
+        .toFormat('jpeg')
+        .jpeg({ quality: 90 })
+        .toFile(`public/image/events/${imageName}`);
 
-  req.body.images = imagesName;
+      req.body.images.push(imageName);
+    })
+  );
 
   next();
 };
