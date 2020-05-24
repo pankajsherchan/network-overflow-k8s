@@ -20,18 +20,24 @@ export const validateGetEventRequest = (req, res, next) => {
 };
 
 export const eventAddEventValidationSchema = Joi.object().keys({
-  name: Joi.string().required(),
-  price: Joi.number().required(),
-  type: Joi.string(),
-  imageCover: Joi.string().required(),
-  images: Joi.array().items(Joi.string()),
-  createdDate: Joi.date().required(),
-  street: Joi.string().required(),
-  city: Joi.string().required(),
-  state: Joi.string().required(),
-  zipCode: Joi.number().required(),
-  country: Joi.string().required(),
-  description: Joi.string()
+  file: Joi.object().keys({
+    filename: Joi.string().required(),
+    fieldname: Joi.string().required()
+  }),
+  body: Joi.object().keys({
+    name: Joi.string().required(),
+    price: Joi.number().required(),
+    type: Joi.string(),
+    imageCover: Joi.string().required(),
+    images: Joi.array().items(Joi.string()),
+    createdDate: Joi.date().required(),
+    street: Joi.string().required(),
+    city: Joi.string().required(),
+    state: Joi.string().required(),
+    zipCode: Joi.number().required(),
+    country: Joi.string().required(),
+    description: Joi.string()
+  })
 });
 
 export const validateAddEventRequest = (req, res, next) => {
@@ -40,7 +46,12 @@ export const validateAddEventRequest = (req, res, next) => {
     return res.boom.badRequest('Event data is required');
   }
 
-  const { error } = eventAddEventValidationSchema.validate(req.body);
+  const validateObj = {
+    body: req.body,
+    file: req.file
+  };
+
+  const { error } = eventAddEventValidationSchema.validate(validateObj);
 
   if (error) {
     return res.boom.badData(error.message);

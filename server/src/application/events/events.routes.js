@@ -20,8 +20,10 @@ router.put(
 );
 router.post(
   '/',
+  eventController.uploadEventImage,
   authenticationController.extractAndVerifyToken,
   validateAddEventRequest,
+  eventController.resizeImages,
   eventController.addEvent
 );
 router.delete(
