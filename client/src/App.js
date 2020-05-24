@@ -5,6 +5,7 @@ import Footer from './components/ui/footer/Footer';
 import Header from './components/ui/header/Header';
 import theme from './components/ui/Theme';
 import AuthContext from './context/AuthContext';
+import useAuthHook from './hooks/AuthHook';
 import Events from './views/events/Events';
 import ForgotPassword from './views/forgot-password/ForgotPassword';
 import VerifyForgotPassword from './views/forgot-password/verify-forgot-password/VerifyForgotPassword';
@@ -19,21 +20,16 @@ const App = () => {
   const [selectedServiceRouteIndex, setSelectedServiceRouteIndex] = useState(0);
   const [selectedRouteIndex, setSelectedRouteIndex] = useState(0);
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState({});
-
-  // useEffect(() => {
-  //   if (localStorage.get('token')) {
-  //   }
-  // }, []);
+  const { token, userId, login, logout } = useAuthHook();
 
   return (
     <AuthContext.Provider
       value={{
-        isLoggedIn: isLoggedIn,
-        setIsLoggedIn: setIsLoggedIn,
-        user: user,
-        setUser: setUser
+        isLoggedIn: !!token,
+        token: token,
+        userId: userId,
+        login: login,
+        logout: logout
       }}
     >
       <ThemeProvider theme={theme}>

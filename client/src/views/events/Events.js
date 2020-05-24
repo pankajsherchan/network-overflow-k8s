@@ -176,6 +176,12 @@ const Events = () => {
         </Grid>
       </Grid>
 
+      {/* Image Section */}
+
+      <Grid container>
+        <Grid item></Grid>
+      </Grid>
+
       <Grid container className={classes.eventContainer} justify="center">
         <Grid item className={classes.eventItem}>
           <EventCard />

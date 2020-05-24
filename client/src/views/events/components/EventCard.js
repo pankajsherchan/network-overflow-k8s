@@ -14,7 +14,7 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ShareIcon from '@material-ui/icons/Share';
 import React from 'react';
-import eventimg from '../../../assets/nepaliflag.png';
+import eventimg from '../../../assets/persons.svg';
 
 const useStyles = makeStyles(theme => ({
   avatar: {

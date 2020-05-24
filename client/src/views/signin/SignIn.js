@@ -94,10 +94,7 @@ const SignIn = () => {
     console.log('response: ', response);
 
     if (response) {
-      const token = `Bearer  ${response.data}`;
-      localStorage.setItem('token', token);
-      authContext.setIsLoggedIn(true);
-
+      authContext.login(response.data.id, response.data.token);
       showDialogBox('Success', 'Login successfully');
     }
   };

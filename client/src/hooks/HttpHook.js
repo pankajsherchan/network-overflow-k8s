@@ -9,7 +9,6 @@ const useHttpHook = () => {
   const [signal, setSignal] = useState(axios.CancelToken.source());
 
   const context = useContext(AuthContext);
-  console.log('context: ', context);
 
   // won't be reinitialized when the hook rerenders
   const activeHttpRequests = useRef([]);

@@ -70,7 +70,11 @@ export const loginUser = async user => {
     const token = generateToken(env.LOGIN_USER_SECRET_KEY, email);
 
     return {
-      data: token,
+      data: {
+        token,
+        id: userInDatabase._id,
+        email: userInDatabase.email
+      },
       httpStatus: httpStatusCodes.OK
     };
   } catch (error) {
