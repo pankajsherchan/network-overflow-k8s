@@ -1,7 +1,6 @@
 import {
   Avatar,
   Button,
-  CircularProgress,
   Container,
   Grid,
   Link,
@@ -14,6 +13,7 @@ import { useFormik } from 'formik';
 import React, { useState } from 'react';
 import * as Yup from 'yup';
 import { environment } from '../../environments/environment';
+import withErrorAndLoadingHandlerHOC from '../../hoc/ErrorAndLoadingHandlerHOC';
 import useHttpHook from '../../hooks/HttpHook';
 import SimpleDialog from '../../shared/dialog/SimpleDialog';
 
@@ -94,7 +94,7 @@ const ForgotPassword = () => {
 
   const hideDialogBox = () => {
     setShowDialog(false);
-    clearError();
+    setDialogMessage(null);
   };
 
   const showDialogBox = (title, message) => {
@@ -105,24 +105,11 @@ const ForgotPassword = () => {
 
   return (
     <Container maxWidth="xs">
-      <div className={classes.spinnerContainer}>
-        {isLoading ? <CircularProgress /> : null}
-      </div>
-
       {showDialog ? (
         <SimpleDialog
-          open={showDialog}
           message={dialogMessage}
           title={dialogTitle}
           hide={hideDialogBox}
-        ></SimpleDialog>
-      ) : null}
-
-      {error ? (
-        <SimpleDialog
-          hide={hideDialogBox}
-          title={error.status}
-          message={error.message}
         ></SimpleDialog>
       ) : null}
 
@@ -197,4 +184,4 @@ const ForgotPassword = () => {
   );
 };
 
-export default ForgotPassword;
+export default withErrorAndLoadingHandlerHOC(ForgotPassword);

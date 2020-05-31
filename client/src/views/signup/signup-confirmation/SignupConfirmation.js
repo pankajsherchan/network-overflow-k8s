@@ -1,12 +1,7 @@
-import {
-  CircularProgress,
-  Container,
-  Grid,
-  makeStyles,
-  Typography
-} from '@material-ui/core';
+import { Container, Grid, makeStyles, Typography } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { environment } from '../../../environments/environment';
+import withErrorAndLoadingHandlerHOC from '../../../hoc/ErrorAndLoadingHandlerHOC';
 import useHttpHook from '../../../hooks/HttpHook';
 import SimpleDialog from '../../../shared/dialog/SimpleDialog';
 
@@ -68,9 +63,7 @@ const SignupConfirmation = props => {
   useEffect(() => {
     const userVerificationCall = async () => {
       const url = `${environment.apiUrl}${environment.apis.userVerification}/${tokenId}`;
-      console.log('url: inside the use effect ', url);
       const response = await sendRequest(url, 'GET');
-      console.log('response: ', response);
       if (response) {
         // showDialogBox('Success', 'User added successfully');
         setVerified(true);
@@ -83,7 +76,7 @@ const SignupConfirmation = props => {
 
   const hideDialogBox = () => {
     setShowDialog(false);
-    clearError();
+    setDialogMessage(null);
   };
 
   const showDialogBox = (title, message) => {
@@ -94,24 +87,11 @@ const SignupConfirmation = props => {
 
   return (
     <Container maxWidth="xs">
-      <div className={classes.spinnerContainer}>
-        {isLoading ? <CircularProgress /> : null}
-      </div>
-
       {showDialog ? (
         <SimpleDialog
-          open={showDialog}
           message={dialogMessage}
           title={dialogTitle}
           hide={hideDialogBox}
-        ></SimpleDialog>
-      ) : null}
-
-      {error ? (
-        <SimpleDialog
-          hide={hideDialogBox}
-          title={error.status}
-          message={error.message}
         ></SimpleDialog>
       ) : null}
 
@@ -129,4 +109,4 @@ const SignupConfirmation = props => {
   );
 };
 
-export default SignupConfirmation;
+export default withErrorAndLoadingHandlerHOC(SignupConfirmation);

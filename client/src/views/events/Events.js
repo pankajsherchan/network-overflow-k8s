@@ -1,13 +1,13 @@
-import { Button, Chip, Grid, makeStyles, Typography } from '@material-ui/core';
+import { Button, Grid, makeStyles, Typography } from '@material-ui/core';
 import { useTheme } from '@material-ui/styles';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Flag from '../../assets/nepaliflag.png';
 import ButtonArrow from '../../components/ui/buttonArrow/ButtonArrow';
-import { countries, eventCategories, states } from '../../shared/constants';
-import EventCard from './components/EventCard';
-import EventFilter from './components/EventFilter';
-import SearchBar from './components/SearchBar';
+// import { countries, eventCategories, states } from '../../shared/constants';
+// import EventCard from './components/EventCard';
+// import EventFilter from './components/EventFilter';
+// import SearchBar from './components/SearchBar';
 
 const useStyles = makeStyles(theme => ({
   eventContainer: {
@@ -132,7 +132,7 @@ const Events = () => {
       </Grid>
 
       {/* SEARCH AND FILTER SECTION */}
-      <Grid container justify="center" className={classes.eventFilterContainer}>
+      {/* <Grid container justify="center" className={classes.eventFilterContainer}>
         <Grid item className={classes.eventFilterItem}>
           <EventFilter
             filterOptions={countries}
@@ -174,11 +174,11 @@ const Events = () => {
             <SearchBar />
           </Grid>
         </Grid>
-      </Grid>
+      </Grid> */}
 
       {/* Image Section */}
 
-      <Grid container>
+      {/* <Grid container>
         <Grid item></Grid>
       </Grid>
 
@@ -197,8 +197,8 @@ const Events = () => {
 
         <Grid item className={classes.eventItem}>
           <EventCard />
-        </Grid>
-      </Grid>
+        </Grid> */}
+      {/* </Grid> */}
     </>
   );
 };

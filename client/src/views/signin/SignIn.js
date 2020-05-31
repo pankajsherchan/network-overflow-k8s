@@ -1,7 +1,6 @@
 import {
   Avatar,
   Button,
-  CircularProgress,
   Container,
   Grid,
   Link,
@@ -15,6 +14,7 @@ import React, { useContext, useState } from 'react';
 import * as Yup from 'yup';
 import AuthContext from '../../context/AuthContext';
 import { environment } from '../../environments/environment';
+import withErrorAndLoadingHandlerHOC from '../../hoc/ErrorAndLoadingHandlerHOC';
 import useHttpHook from '../../hooks/HttpHook';
 import SimpleDialog from '../../shared/dialog/SimpleDialog';
 
@@ -68,7 +68,7 @@ const SignIn = () => {
   const [dialogMessage, setDialogMessage] = useState('');
   const [dialogTitle, setDialogTitle] = useState('');
 
-  const { isLoading, error, sendRequest, clearError } = useHttpHook();
+  const { sendRequest } = useHttpHook();
 
   const authContext = useContext(AuthContext);
 
@@ -91,9 +91,8 @@ const SignIn = () => {
   const login = async user => {
     const url = `${environment.apiUrl}${environment.apis.login}`;
     const response = await sendRequest(url, 'POST', user, {});
-    console.log('response: ', response);
 
-    if (response) {
+    if (response.data.data) {
       authContext.login(response.data.id, response.data.token);
       showDialogBox('Success', 'Login successfully');
     }
@@ -101,7 +100,7 @@ const SignIn = () => {
 
   const hideDialogBox = () => {
     setShowDialog(false);
-    clearError();
+    setDialogMessage(null);
   };
 
   const showDialogBox = (title, message) => {
@@ -112,24 +111,12 @@ const SignIn = () => {
 
   return (
     <Container maxWidth="xs">
-      <div className={classes.spinnerContainer}>
-        {isLoading ? <CircularProgress /> : null}
-      </div>
-
       {showDialog ? (
         <SimpleDialog
           open={showDialog}
           message={dialogMessage}
           title={dialogTitle}
           hide={hideDialogBox}
-        ></SimpleDialog>
-      ) : null}
-
-      {error ? (
-        <SimpleDialog
-          hide={hideDialogBox}
-          title={error.status}
-          message={error.message}
         ></SimpleDialog>
       ) : null}
 
@@ -223,4 +210,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default withErrorAndLoadingHandlerHOC(SignIn);

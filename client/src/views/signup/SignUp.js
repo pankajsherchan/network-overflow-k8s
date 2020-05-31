@@ -1,6 +1,5 @@
 import {
   Button,
-  CircularProgress,
   Container,
   Grid,
   Link,
@@ -14,6 +13,7 @@ import { useFormik } from 'formik';
 import React, { useState } from 'react';
 import * as Yup from 'yup';
 import { environment } from '../../environments/environment';
+import withErrorAndLoadingHandlerHOC from '../../hoc/ErrorAndLoadingHandlerHOC';
 import useHttpHook from '../../hooks/HttpHook';
 import SimpleDialog from '../../shared/dialog/SimpleDialog';
 
@@ -65,7 +65,7 @@ const SignUp = () => {
   const [dialogMessage, setDialogMessage] = useState('');
   const [dialogTitle, setDialogTitle] = useState('');
 
-  const { isLoading, error, sendRequest, clearError } = useHttpHook();
+  const { sendRequest } = useHttpHook();
 
   const signupSchema = Yup.object({
     firstName: Yup.string()
@@ -111,14 +111,14 @@ const SignUp = () => {
     const url = `${environment.apiUrl}${environment.apis.signup}`;
     const response = await sendRequest(url, 'POST', user, {});
 
-    if (response) {
+    if (response.data.data) {
       showDialogBox('Success', 'User added successfully');
     }
   };
 
   const hideDialogBox = () => {
     setShowDialog(false);
-    clearError();
+    setDialogMessage(null);
   };
 
   const showDialogBox = (title, message) => {
@@ -131,24 +131,11 @@ const SignUp = () => {
     <>
       {/* // centers the content horizontally */}
       <Container maxWidth="xs">
-        <div className={classes.spinnerContainer}>
-          {isLoading ? <CircularProgress /> : null}
-        </div>
-
         {showDialog ? (
           <SimpleDialog
-            open={showDialog}
             message={dialogMessage}
             title={dialogTitle}
             hide={hideDialogBox}
-          ></SimpleDialog>
-        ) : null}
-
-        {error ? (
-          <SimpleDialog
-            hide={hideDialogBox}
-            title={error.status}
-            message={error.message}
           ></SimpleDialog>
         ) : null}
         <Grid
@@ -302,4 +289,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default withErrorAndLoadingHandlerHOC(SignUp);
