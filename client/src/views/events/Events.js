@@ -1,9 +1,17 @@
-import { Button, Grid, makeStyles, Typography } from '@material-ui/core';
+import {
+  Button,
+  Divider,
+  Grid,
+  makeStyles,
+  Typography
+} from '@material-ui/core';
 import { useTheme } from '@material-ui/styles';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Flag from '../../assets/nepaliflag.png';
 import ButtonArrow from '../../components/ui/buttonArrow/ButtonArrow';
+import withErrorAndLoadingHandlerHOC from '../../hoc/ErrorAndLoadingHandlerHOC';
+import Events from './containers/Events';
 // import { countries, eventCategories, states } from '../../shared/constants';
 // import EventCard from './components/EventCard';
 // import EventFilter from './components/EventFilter';
@@ -70,7 +78,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Events = () => {
+const EventView = () => {
   const classes = useStyles();
 
   const theme = useTheme();
@@ -130,6 +138,10 @@ const Events = () => {
           </Grid>
         </Grid>
       </Grid>
+
+      <Divider />
+
+      <Events> </Events>
 
       {/* SEARCH AND FILTER SECTION */}
       {/* <Grid container justify="center" className={classes.eventFilterContainer}>
@@ -202,4 +214,4 @@ const Events = () => {
     </>
   );
 };
-export default Events;
+export default withErrorAndLoadingHandlerHOC(EventView);

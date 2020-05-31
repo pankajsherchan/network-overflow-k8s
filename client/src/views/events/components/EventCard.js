@@ -14,11 +14,11 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ShareIcon from '@material-ui/icons/Share';
 import React from 'react';
-import eventimg from '../../../assets/persons.svg';
+import eventimg from '../../../assets/event.jpg';
 
 const useStyles = makeStyles(theme => ({
   avatar: {
-    backgroundColor: theme.palette.common.red
+    backgroundColor: theme.palette.secondary.light
   },
   eventCardHeader: {
     ...theme.typography.h4
@@ -52,15 +52,24 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const EventCard = () => {
+const EventCard = props => {
+  console.log('props: eventcard ', props);
+  const { event } = props;
   const classes = useStyles();
+
+  var dateOptions = {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  };
 
   return (
     <Card className={classes.root}>
       <CardHeader
         avatar={
           <Avatar aria-label="recipe" className={classes.avatar}>
-            R
+            {event.name[0].toUpperCase()}
           </Avatar>
         }
         action={
@@ -68,8 +77,11 @@ const EventCard = () => {
             <MoreVertIcon />
           </IconButton>
         }
-        title="Shrimp and Chorizo Paella"
-        subheader="September 14, 2016"
+        title={event.name}
+        subheader={new Date(event.createdDate).toLocaleDateString(
+          'en-US',
+          dateOptions
+        )}
         className={classes.eventCardHeader}
         classes={{
           subheader: classes.eventCardSubHeader,
@@ -84,8 +96,7 @@ const EventCard = () => {
         />
         <CardContent>
           <Typography variant="body2" color="textSecondary" component="p">
-            Lizards are a widespread group of squamate reptiles, with over 6,000
-            species, ranging across all continents except Antarctica
+            {event.description}
           </Typography>
         </CardContent>
       </CardActionArea>

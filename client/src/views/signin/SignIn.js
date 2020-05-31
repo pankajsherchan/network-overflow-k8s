@@ -92,7 +92,7 @@ const SignIn = () => {
     const url = `${environment.apiUrl}${environment.apis.login}`;
     const response = await sendRequest(url, 'POST', user, {});
 
-    if (response.data.data) {
+    if (response.data) {
       authContext.login(response.data.id, response.data.token);
       showDialogBox('Success', 'Login successfully');
     }

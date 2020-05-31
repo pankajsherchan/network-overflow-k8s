@@ -20,7 +20,7 @@ const useHttpHook = () => {
         data: body
       });
 
-      return response;
+      return response.data;
     },
     []
   );

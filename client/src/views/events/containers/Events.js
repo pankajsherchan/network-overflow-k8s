@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { environment } from '../../../environments/environment';
 import useHttpHook from '../../../hooks/HttpHook';
+import EventList from '../components/EventList';
 
 const Events = () => {
   const { sendRequest } = useHttpHook();
 
-  const [event, setEvents] = useState(null);
+  const [events, setEvents] = useState(null);
 
   // get the events
   useEffect(() => {
@@ -12,29 +14,14 @@ const Events = () => {
       const url = `${environment.apiUrl}${environment.apis.event}`;
 
       const res = await sendRequest(url, 'GET');
-
+      console.log('res: ', res);
       setEvents(res.data);
     };
 
     sendRequestAsync();
   }, []);
 
-  useEffect(() => {
-    const sendRequest = async () => {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}/posts`);
-
-      res.data.posts.map(p => {
-        p.date = moment(p.date).format('MM/DD/YYYY');
-        return p;
-      });
-
-      setPostList(res.data.posts);
-    };
-
-    sendRequest();
-  }, []);
-
-  return <div> Event Container </div>;
+  return <>{events ? <EventList events={events}></EventList> : null}</>;
 };
 
 export default Events;

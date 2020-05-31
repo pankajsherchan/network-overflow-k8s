@@ -111,7 +111,7 @@ const SignUp = () => {
     const url = `${environment.apiUrl}${environment.apis.signup}`;
     const response = await sendRequest(url, 'POST', user, {});
 
-    if (response.data.data) {
+    if (response.data) {
       showDialogBox('Success', 'User added successfully');
     }
   };
