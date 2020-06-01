@@ -53,7 +53,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const EventCard = props => {
-  console.log('props: eventcard ', props);
   const { event } = props;
   const classes = useStyles();
 

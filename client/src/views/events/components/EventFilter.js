@@ -28,40 +28,51 @@ const useStyles = makeStyles({
 
 const EventFilter = props => {
   const classes = useStyles();
-  const { filterOptions, filterLabel, isCountryFilter } = props;
+  const { filterOptions, filterLabel, isCountryFilter, onFilterChange } = props;
+
+  const test = e => {
+    console.log(e.target.value);
+  };
   return (
-    <Autocomplete
-      id="country-select-demo"
-      style={{ width: 300 }}
-      options={filterOptions}
-      classes={{
-        option: classes.option
-      }}
-      autoHighlight
-      getOptionLabel={option => option.label}
-      renderOption={option => (
-        <>
-          {isCountryFilter ? <span>{countryToFlag(option.code)}</span> : null}
-          {option.label}
-        </>
-      )}
-      renderInput={params => (
-        <TextField
-          {...params}
-          label={filterLabel}
-          variant="outlined"
-          inputProps={{
-            ...params.inputProps,
-            autoComplete: 'new-password' // disable autocomplete and autofill
-          }}
-        />
-      )}
-    />
+    <>
+      <Autocomplete
+        id="country-select-demo"
+        style={{ width: 300 }}
+        options={filterOptions}
+        classes={{
+          option: classes.option
+        }}
+        autoHighlight
+        getOptionLabel={option => option.label}
+        onChange={test}
+        renderOption={option => (
+          <>
+            {isCountryFilter ? <span>{countryToFlag(option.code)}</span> : null}
+            {option.label}
+          </>
+        )}
+        renderInput={params => (
+          <TextField
+            {...params}
+            label={filterLabel}
+            variant="outlined"
+            inputProps={{
+              ...params.inputProps,
+              autoComplete: 'new-password' // disable autocomplete and autofill
+            }}
+          />
+        )}
+        onChange={(event, newValue) => {
+          if (newValue) {
+            onFilterChange(newValue.code);
+          }
+        }}
+      />
+    </>
   );
 };
 
 EventFilter.propTypes = {
-  // eslint-disable-next-line react/forbid-prop-types
   filterOptions: PropTypes.array.isRequired,
   filterLabel: PropTypes.string.isRequired,
   isCountryFilter: PropTypes.bool

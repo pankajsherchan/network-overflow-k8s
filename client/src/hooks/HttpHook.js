@@ -6,7 +6,7 @@ const useHttpHook = () => {
   const context = useContext(AuthContext);
 
   const sendRequest = useCallback(
-    async (url, method, body = null, config = {}) => {
+    async (url, method, params = {}, body = null, config = {}) => {
       config = config ?? {
         headers: {
           'Content-Type': 'application/json'
@@ -16,6 +16,7 @@ const useHttpHook = () => {
       const response = await axios({
         method,
         url,
+        params,
         config,
         data: body
       });

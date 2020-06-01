@@ -12,7 +12,7 @@ const useStyles = makeStyles(theme => ({
     padding: '2px 4px',
     display: 'flex',
     alignItems: 'center',
-    width: 400
+    width: 600
   },
   input: {
     marginLeft: theme.spacing(1),
@@ -27,19 +27,21 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const SearchBar = () => {
+const SearchBar = props => {
   const classes = useStyles();
 
+  const { search, setSearch } = props;
+
   return (
-    <Paper component="form" className={classes.root}>
-      {/* <IconButton className={classes.iconButton} aria-label="menu">
-        <MenuIcon />
-      </IconButton> */}
+    <Paper component="form" className={classes.root} elevation={2}>
       <InputBase
         className={classes.input}
         placeholder="Search Events "
         inputProps={{ 'aria-label': 'search events' }}
+        value={search}
+        onChange={setSearch}
       />
+
       <IconButton
         type="submit"
         className={classes.iconButton}
@@ -53,11 +55,7 @@ const SearchBar = () => {
         className={classes.iconButton}
         aria-label="directions"
       >
-        <Button
-          variant="contained"
-          className={classes.createEventButton}
-          color="primary"
-        >
+        <Button variant="contained" color="primary">
           Search
         </Button>
       </IconButton>
