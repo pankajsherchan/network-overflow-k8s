@@ -129,7 +129,6 @@ const SignUp = () => {
 
   return (
     <>
-      {/* // centers the content horizontally */}
       <Container maxWidth="xs">
         {showDialog ? (
           <SimpleDialog
