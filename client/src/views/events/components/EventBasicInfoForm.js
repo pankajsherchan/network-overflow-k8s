@@ -1,9 +1,11 @@
 import { Container, Grid, TextField, Typography } from '@material-ui/core';
 import Avatar from '@material-ui/core/Avatar';
+import InputLabel from '@material-ui/core/InputLabel';
 import { makeStyles } from '@material-ui/core/styles';
 import InfoIcon from '@material-ui/icons/Info';
 import React from 'react';
 import ImageUpload from '../../../shared/components/ImageUpload';
+
 
 const useStyles = makeStyles(theme => ({
   signupContainer: {
@@ -192,6 +194,8 @@ const EventBasicInfoForm = props => {
               </Grid>
 
               <Grid item xs={12}>
+
+                <InputLabel> Background Image</InputLabel>
                 <ImageUpload onImageUpload={setBackgroundImage} />
 
                 {formik.errors.backgroundImage &&
@@ -203,25 +207,14 @@ const EventBasicInfoForm = props => {
               </Grid>
 
               <Grid item xs={12}>
-                {/* <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  name="images"
-                  label="images"
-                  id="images"
-                  autoComplete="current-images"
-                  value={formik.values.images}
-                  onChange={formik.handleChange}
-                  onBlur={() => formik.setFieldTouched('images', true)}
-                />
-                {formik.errors.images && formik.touched.images ? (
-                  <div className={classes.formError}>
-                    {formik.errors.images}
-                  </div>
-                ) : null} */}
-
+                <InputLabel> Images </InputLabel>
                 <ImageUpload onImageUpload={setImages} />
+                {formik.errors.images &&
+                  formik.touched.images ? (
+                    <div className={classes.formError}>
+                      {formik.errors.images}
+                    </div>
+                  ) : null}
               </Grid>
             </Grid>
           </form>

@@ -7,6 +7,7 @@ import theme from './components/ui/Theme';
 import AuthContext from './context/AuthContext';
 import useAuthHook from './hooks/AuthHook';
 import EventAdd from './views/events/containers/EventAdd';
+import EventDetail from './views/events/containers/EventDetail';
 import Events from './views/events/Events';
 import ForgotPassword from './views/forgot-password/ForgotPassword';
 import VerifyForgotPassword from './views/forgot-password/verify-forgot-password/VerifyForgotPassword';
@@ -51,6 +52,7 @@ const App = () => {
             <Route exact path="/jobs" component={Jobs} />
             <Route exact path="/events" component={Events} />
             <Route exact path="/createEvent" component={EventAdd} />
+            <Route exact path="/eventDetail/:eventId" component={EventDetail} />
             <Route exact path="/roommates" component={Roommates} />
             <Route exact path="/about" component={() => <div> about </div>} />
             <Route

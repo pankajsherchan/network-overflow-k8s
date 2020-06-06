@@ -1,8 +1,10 @@
+import { Grid } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -66,6 +68,22 @@ const ImageUpload = props => {
         type="file"
         onChange={upload}
       />
+
+      <Grid container >
+        {previewUrl &&
+          previewUrl.map((url, index) => (
+            <Grid item>
+              <img
+                src={previewUrl[index]}
+                alt={'uploaded image'}
+                key={url}
+                width={200}
+                height={200}
+              />
+            </Grid>
+          ))}
+      </Grid>
+
       <label htmlFor={randomId}>
         <Button
           variant="contained"
@@ -76,17 +94,6 @@ const ImageUpload = props => {
           Upload
         </Button>
       </label>
-
-      {previewUrl &&
-        previewUrl.map((url, index) => (
-          <img
-            src={previewUrl[index]}
-            alt={'uploaded image'}
-            key={url}
-            width={200}
-            height={200}
-          />
-        ))}
     </div>
   );
 };

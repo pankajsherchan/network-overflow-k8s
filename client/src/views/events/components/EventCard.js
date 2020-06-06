@@ -1,11 +1,4 @@
-import {
-  Card,
-  CardActionArea,
-  CardActions,
-  CardContent,
-  CardMedia,
-  Typography
-} from '@material-ui/core';
+import { ButtonBase, Card, CardActionArea, CardActions, CardContent, CardMedia, Typography } from '@material-ui/core';
 import Avatar from '@material-ui/core/Avatar';
 import CardHeader from '@material-ui/core/CardHeader';
 import IconButton from '@material-ui/core/IconButton';
@@ -14,7 +7,9 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ShareIcon from '@material-ui/icons/Share';
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import eventimg from '../../../assets/event.jpg';
+
 
 const useStyles = makeStyles(theme => ({
   avatar: {
@@ -48,27 +43,44 @@ const useStyles = makeStyles(theme => ({
     }
   },
   media: {
-    height: 140
+    height: 140,
+    width: 340
+  },
+  cardAction: {
+    display: 'block',
+    textAlign: 'initial'
   }
 }));
 
 const EventCard = props => {
   const { event } = props;
   const classes = useStyles();
+  const history = useHistory();
 
-  var dateOptions = {
+
+  const dateOptions = {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
     day: 'numeric'
   };
 
+  const onCardClick = (e) => {
+    history.push("/eventDetail");
+
+    history.push({
+      pathname: `/eventDetail/${event._id}`,
+      state: { event }
+    });
+  }
+
   return (
     <Card className={classes.root}>
+
       <CardHeader
         avatar={
           <Avatar aria-label="recipe" className={classes.avatar}>
-            {event.name[0].toUpperCase()}
+            {event.title[0].toUpperCase()}
           </Avatar>
         }
         action={
@@ -76,8 +88,8 @@ const EventCard = props => {
             <MoreVertIcon />
           </IconButton>
         }
-        title={event.name}
-        subheader={new Date(event.createdDate).toLocaleDateString(
+        title={event.title}
+        subheader={new Date(event.date).toLocaleDateString(
           'en-US',
           dateOptions
         )}
@@ -88,17 +100,23 @@ const EventCard = props => {
         }}
       />
       <CardActionArea>
-        <CardMedia
-          className={classes.media}
-          image={eventimg}
-          title="Contemplative Reptile"
-        />
-        <CardContent>
-          <Typography variant="body2" color="textSecondary" component="p">
-            {event.description}
-          </Typography>
-        </CardContent>
+        <ButtonBase
+          className={classes.cardAction}
+          onClick={onCardClick}
+        >
+          <CardMedia
+            className={classes.media}
+            image={eventimg}
+            title="Contemplative Reptile"
+          />
+          <CardContent>
+            <Typography variant="body2" color="textSecondary" component="p">
+              {event.description}
+            </Typography>
+          </CardContent>
+        </ButtonBase>
       </CardActionArea>
+
       <CardActions>
         <IconButton aria-label="add to favorites">
           <FavoriteIcon />
@@ -107,7 +125,7 @@ const EventCard = props => {
           <ShareIcon />
         </IconButton>
       </CardActions>
-    </Card>
+    </Card >
   );
 };
 

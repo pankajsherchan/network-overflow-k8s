@@ -39,7 +39,8 @@ const useStyles = makeStyles(theme => ({
     }
   },
   stepper: {
-    padding: theme.spacing(3, 0, 5)
+    padding: theme.spacing(3, 0, 5),
+    width: 500
   },
   buttons: {
     display: 'flex',
@@ -114,7 +115,7 @@ const EventAdd = () => {
       startTime: null,
       endTime: null
     },
-    // validationSchema: eventAddSchema,
+    validationSchema: eventAddSchema,
     onSubmit: async event => {
       addEvent(event);
     }
@@ -163,48 +164,50 @@ const EventAdd = () => {
 
   return (
     <>
-      <Grid container direction="column">
-        <Stepper activeStep={activeStep} className={classes.stepper}>
-          {steps.map(label => (
-            <Step key={label}>
-              <StepLabel>{label}</StepLabel>
-            </Step>
-          ))}
-        </Stepper>
+      <Grid container direction="column" justify="center" alignItems="center">
+        <Grid item>
+          <Stepper activeStep={activeStep} className={classes.stepper}>
+            {steps.map(label => (
+              <Step key={label}>
+                <StepLabel>{label}</StepLabel>
+              </Step>
+            ))}
+          </Stepper>
 
-        <>
-          {activeStep === steps.length ? (
-            <>
-              <Typography variant="h5" gutterBottom>
-                Thank you for your order.
-              </Typography>
-              <Typography variant="subtitle1">
-                Your order number is #2001539. We have emailed your order
-                confirmation, and will send you an update when your order has
-                shipped.
-              </Typography>
-            </>
-          ) : (
+          <>
+            {activeStep === steps.length ? (
               <>
-                {getStepContent(activeStep)}
-                <div className={classes.buttons}>
-                  {activeStep !== 0 && (
-                    <Button onClick={handleBack} className={classes.button}>
-                      Back
-                    </Button>
-                  )}
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleNext}
-                    className={classes.button}
-                  >
-                    {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
-                  </Button>
-                </div>
+                <Typography variant="h5" gutterBottom>
+                  Thank you for your order.
+              </Typography>
+                <Typography variant="subtitle1">
+                  Your order number is #2001539. We have emailed your order
+                  confirmation, and will send you an update when your order has
+                  shipped.
+              </Typography>
               </>
-            )}
-        </>
+            ) : (
+                <>
+                  {getStepContent(activeStep)}
+                  <div className={classes.buttons}>
+                    {activeStep !== 0 && (
+                      <Button onClick={handleBack} className={classes.button}>
+                        Back
+                      </Button>
+                    )}
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleNext}
+                      className={classes.button}
+                    >
+                      {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
+                    </Button>
+                  </div>
+                </>
+              )}
+          </>
+        </Grid>
 
         <Grid
           container
@@ -218,10 +221,10 @@ const EventAdd = () => {
               fullWidth
               variant="contained"
               color="primary"
-              // disabled={!formik.isValid}
+              disabled={!formik.isValid}
               onClick={formik.submitForm}
             >
-              Create Event{' '}
+              Create Event
             </Button>
           </Grid>
         </Grid>
