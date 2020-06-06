@@ -27,33 +27,19 @@ const useHttpHook = () => {
   );
 
   const sendMultiFormRequest = useCallback(
-    async (url, method, params = {}, body = null, config = {}) => {
-      config = config ?? {
+    async (url, formData) => {
+      const config = {
         headers: {
-          'Content-Type': 'application/json'
+          'content-type': 'multipart/form-data'
         }
       };
-
-      const formData = new FormData();
-
-      Object.keys(body).forEach(key => {
-        formData.append(key, body[key]);
-      });
-
-      const response = await axios({
-        method,
-        url,
-        params,
-        config,
-        data: formData
-      });
-
+      const response = await axios.post(url, formData, config)
       return response.data;
     },
     []
   );
 
-  return { sendRequest };
+  return { sendRequest, sendMultiFormRequest };
 };
 
 export default useHttpHook;

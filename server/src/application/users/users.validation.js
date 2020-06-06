@@ -5,7 +5,6 @@ const getUserValidationSchema = Joi.object().keys({
 });
 
 export const validateGetUserRequest = (req, res, next) => {
-  console.log(req.params);
   if (!req.params) {
     return res.boom.badRequest('Username value is missing');
   }

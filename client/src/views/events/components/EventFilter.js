@@ -9,10 +9,10 @@ import React from 'react';
 function countryToFlag(isoCode) {
   return typeof String.fromCodePoint !== 'undefined'
     ? isoCode
-        .toUpperCase()
-        .replace(/./g, char =>
-          String.fromCodePoint(char.charCodeAt(0) + 127397)
-        )
+      .toUpperCase()
+      .replace(/./g, char =>
+        String.fromCodePoint(char.charCodeAt(0) + 127397)
+      )
     : isoCode;
 }
 
@@ -31,7 +31,6 @@ const EventFilter = props => {
   const { filterOptions, filterLabel, isCountryFilter, onFilterChange } = props;
 
   const test = e => {
-    console.log(e.target.value);
   };
   return (
     <>

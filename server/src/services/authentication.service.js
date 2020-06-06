@@ -89,7 +89,6 @@ export const forgotPassword = async email => {
   const userForgotPasswordVerificationToken = generateToken(env.FORGOT_PASSWORD_SECRET_KEY, email);
 
   const url = `${env.FRONTEND_BASE_URL}/forgotPassword/${userForgotPasswordVerificationToken}`;
-  console.log('url: ', url);
 
   const emailConfig = {
     receiver: email,

@@ -1,12 +1,7 @@
 import express from 'express';
 import * as authenticationController from '../authentication';
 import * as eventController from './events.controller';
-import {
-  validateAddEventRequest,
-  validateDeleteEventRequest,
-  validateGetEventRequest,
-  validateUpdateEventRequest
-} from './events.validation';
+import { validateAddEventRequest, validateDeleteEventRequest, validateGetEventRequest, validateUpdateEventRequest } from './events.validation';
 
 const router = express.Router();
 
@@ -21,7 +16,7 @@ router.put(
 router.post(
   '/',
   eventController.uploadEventImage,
-  authenticationController.extractAndVerifyToken,
+  // authenticationController.extractAndVerifyToken,
   validateAddEventRequest,
   eventController.resizeImages,
   eventController.addEvent

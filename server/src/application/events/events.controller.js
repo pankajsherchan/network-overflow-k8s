@@ -30,7 +30,7 @@ const upload = multer({
 });
 
 export const uploadEventImage = upload.fields([
-  { name: 'imageCover', maxCount: 1 },
+  { name: 'backgroundImage', maxCount: 1 },
   { name: 'images', maxCount: 4 }
 ]);
 
@@ -39,15 +39,15 @@ export const resizeImages = async (req, res, next) => {
     next();
   }
 
-  const coverImageName = `events-${Date.now()}-${req.files.imageCover[0].originalname}`;
+  const coverImageName = `events-${Date.now()}-${req.files.backgroundImage[0].originalname}`;
 
-  await sharp(req.files.imageCover[0].buffer)
+  await sharp(req.files.backgroundImage[0].buffer)
     .resize(500, 500)
     .toFormat('jpeg')
     .jpeg({ quality: 90 })
     .toFile(`public/image/events/${coverImageName}`);
 
-  req.body.imageCover = coverImageName;
+  req.body.backgroundImage = coverImageName;
 
   req.body.images = [];
 

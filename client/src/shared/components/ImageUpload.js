@@ -2,6 +2,7 @@ import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import React, { useEffect, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -19,42 +20,53 @@ const ImageUpload = props => {
 
   const { onImageUpload } = props;
 
-  const [file, setFile] = useState();
-  const [previewUrl, setPreviewUrl] = useState();
+  const [files, setFiles] = useState([]);
+
+  const [previewUrl, setPreviewUrl] = useState([]);
 
   useEffect(() => {
-    if (!file) {
+    if (!files) {
       return;
     }
 
-    const fileReader = new FileReader();
-    fileReader.onload = () => {
-      setPreviewUrl(fileReader.result);
-    };
-    fileReader.readAsDataURL(file);
-  }, [file]);
+    Promise.all(
+      files.map(file => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.addEventListener('load', ev => {
+            resolve(ev.target.result);
+          });
+
+          reader.addEventListener('error', reject);
+          reader.readAsDataURL(file);
+        });
+      })
+    ).then(images => {
+      setPreviewUrl(images);
+    });
+  }, [files]);
 
   const upload = event => {
-    let pickedFile;
-
     if (event.target.files && event.target.files.length > 0) {
-      pickedFile = event.target.files[0];
-      setFile(pickedFile);
-      onImageUpload(pickedFile);
+      const files = Array.from(event.target.files);
+      setFiles(files);
+      onImageUpload(files);
     }
   };
+
+  const randomId = uuidv4();
 
   return (
     <div className={classes.root}>
       <input
         accept="image/*"
         className={classes.input}
-        id="contained-button-file"
+        id={randomId}
         multiple
         type="file"
         onChange={upload}
       />
-      <label htmlFor="contained-button-file">
+      <label htmlFor={randomId}>
         <Button
           variant="contained"
           color="primary"
@@ -65,11 +77,16 @@ const ImageUpload = props => {
         </Button>
       </label>
 
-      {previewUrl && (
-        <img src={previewUrl} alt={'uploaded image'} width={200} height={200} />
-      )}
-
-      {!previewUrl && <div> please pick an image </div>}
+      {previewUrl &&
+        previewUrl.map((url, index) => (
+          <img
+            src={previewUrl[index]}
+            alt={'uploaded image'}
+            key={url}
+            width={200}
+            height={200}
+          />
+        ))}
     </div>
   );
 };

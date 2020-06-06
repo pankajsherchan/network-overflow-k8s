@@ -50,7 +50,7 @@ const EventBasicInfoForm = props => {
   const classes = useStyles();
   const { formik } = props;
   const setBackgroundImage = file => {
-    formik.setFieldValue('backgroundImage', file);
+    formik.setFieldValue('backgroundImage', file[0]);
   };
 
   const setImages = files => {
@@ -195,11 +195,11 @@ const EventBasicInfoForm = props => {
                 <ImageUpload onImageUpload={setBackgroundImage} />
 
                 {formik.errors.backgroundImage &&
-                formik.touched.backgroundImage ? (
-                  <div className={classes.formError}>
-                    {formik.errors.backgroundImage}
-                  </div>
-                ) : null}
+                  formik.touched.backgroundImage ? (
+                    <div className={classes.formError}>
+                      {formik.errors.backgroundImage}
+                    </div>
+                  ) : null}
               </Grid>
 
               <Grid item xs={12}>

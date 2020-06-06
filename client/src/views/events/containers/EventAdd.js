@@ -5,9 +5,12 @@ import Stepper from '@material-ui/core/Stepper';
 import { useFormik } from 'formik';
 import React from 'react';
 import * as Yup from 'yup';
+import { environment } from '../../../environments/environment';
+import useHttpHook from '../../../hooks/HttpHook';
 import EventAddressForm from '../components/EventAddressForm';
 import EventBasicInfoForm from '../components/EventBasicInfoForm';
 import EventTicketForm from '../components/EventTicketForm';
+
 
 const steps = ['Basic Info', 'Address', 'Ticket'];
 
@@ -50,6 +53,8 @@ const useStyles = makeStyles(theme => ({
 
 const EventAdd = () => {
   const classes = useStyles();
+
+  const { sendMultiFormRequest } = useHttpHook();
 
   const eventAddSchema = Yup.object({
     title: Yup.string()
@@ -109,11 +114,29 @@ const EventAdd = () => {
       startTime: null,
       endTime: null
     },
-    validationSchema: eventAddSchema,
-    onSubmit: async addEvent => {
-      console.log('addEvent: ', addEvent);
+    // validationSchema: eventAddSchema,
+    onSubmit: async event => {
+      addEvent(event);
     }
   });
+
+  const addEvent = async (event) => {
+    const formData = new FormData();
+    Object.keys(event).map(key => {
+      if (key !== 'images') {
+        formData.append(key, event[key])
+      }
+    })
+
+    if (event.images && event.images.length) {
+      event.images.map(image => {
+        formData.append('images', image);
+      })
+    }
+    const url = `${environment.apiUrl}${environment.apis.event}`;
+    // const res = Axios.post('https://httpbin.org/anything', formData).then(res => console.log(res));
+    const response = await sendMultiFormRequest(url, formData);
+  }
 
   function getStepContent(step) {
     switch (step) {
@@ -162,25 +185,25 @@ const EventAdd = () => {
               </Typography>
             </>
           ) : (
-            <>
-              {getStepContent(activeStep)}
-              <div className={classes.buttons}>
-                {activeStep !== 0 && (
-                  <Button onClick={handleBack} className={classes.button}>
-                    Back
+              <>
+                {getStepContent(activeStep)}
+                <div className={classes.buttons}>
+                  {activeStep !== 0 && (
+                    <Button onClick={handleBack} className={classes.button}>
+                      Back
+                    </Button>
+                  )}
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleNext}
+                    className={classes.button}
+                  >
+                    {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
                   </Button>
-                )}
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleNext}
-                  className={classes.button}
-                >
-                  {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
-                </Button>
-              </div>
-            </>
-          )}
+                </div>
+              </>
+            )}
         </>
 
         <Grid
@@ -195,7 +218,7 @@ const EventAdd = () => {
               fullWidth
               variant="contained"
               color="primary"
-              disabled={!formik.isValid}
+              // disabled={!formik.isValid}
               onClick={formik.submitForm}
             >
               Create Event{' '}
