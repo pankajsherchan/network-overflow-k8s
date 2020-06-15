@@ -3,7 +3,9 @@
     "es6": true,
     "node": true
   },
-  "extends": ["airbnb-base"],
+  "extends": [
+    "airbnb-base"
+  ],
   "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"
@@ -25,12 +27,24 @@
     ],
     "no-console": "warn",
     "consistent-return": "off",
-    "no-unused-vars": ["error", { "argsIgnorePattern": "req|res|next|val" }],
-    "arrow-parens": ["error", "as-needed"],
+    "no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "req|res|next|val"
+      }
+    ],
+    "arrow-parens": [
+      "error",
+      "as-needed"
+    ],
     "no-use-before-define": "off",
     "object-curly-newline": "off",
     "implicit-arrow-linebreak": "off",
     "no-underscore-dangle": "off",
-    "no-return-await": "off"
+    "no-return-await": "off",
+    "indent": [
+      "off",
+      2
+    ]
   }
 }

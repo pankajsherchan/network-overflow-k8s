@@ -2,8 +2,8 @@ import bcrypt from 'bcrypt';
 import httpStatusCodes from 'http-status-codes';
 import jwt from 'jsonwebtoken';
 import AppError from '../application/error/appError';
+import constant from '../constant';
 import User from '../database/schemas/user.schema';
-import env from '../env';
 import { logger } from '../utils';
 import sendEmail from './email.service';
 
@@ -67,7 +67,7 @@ export const loginUser = async user => {
       throw new AppError('Incorrect email or password', 401);
     }
 
-    const token = generateToken(env.LOGIN_USER_SECRET_KEY, email);
+    const token = generateToken(constant.LOGIN_USER_SECRET_KEY, email);
 
     return {
       data: {
@@ -86,9 +86,9 @@ export const loginUser = async user => {
 export const forgotPassword = async email => {
   logger.info('UserService - Forgot Password');
 
-  const userForgotPasswordVerificationToken = generateToken(env.FORGOT_PASSWORD_SECRET_KEY, email);
+  const userForgotPasswordVerificationToken = generateToken(constant.FORGOT_PASSWORD_SECRET_KEY, email);
 
-  const url = `${env.FRONTEND_BASE_URL}/forgotPassword/${userForgotPasswordVerificationToken}`;
+  const url = `${constant.FRONTEND_BASE_URL}/forgotPassword/${userForgotPasswordVerificationToken}`;
 
   const emailConfig = {
     receiver: email,
@@ -153,9 +153,9 @@ export const verifyPassword = async (password, encryptPassword) =>
   bcrypt.compare(password, encryptPassword);
 
 export const sendUserVerificationEmail = async (username, email) => {
-  const userVerificationToken = generateToken(env.VERIFY_USER_SECRET_KEY, email);
+  const userVerificationToken = generateToken(constant.VERIFY_USER_SECRET_KEY, email);
 
-  const url = `${env.FRONTEND_BASE_URL}/userVerification/${userVerificationToken}`;
+  const url = `${constant.FRONTEND_BASE_URL}/userVerification/${userVerificationToken}`;
 
   const emailConfig = {
     receiver: email,
@@ -173,7 +173,7 @@ export const sendUserVerificationEmail = async (username, email) => {
 
 export const generateToken = (secretKey, tokenData) =>
   jwt.sign({ tokenData }, secretKey, {
-    expiresIn: env.TOKEN_EXPIRATION_TIME
+    expiresIn: constant.TOKEN_EXPIRATION_TIME
   });
 
 export const verifyToken = (token, secretKey) => jwt.verify(token, secretKey);

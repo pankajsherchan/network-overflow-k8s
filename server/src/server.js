@@ -7,8 +7,7 @@ const PORT = env.PORT || 5000;
 connectDB();
 
 const server = app.listen(PORT, () =>
-  console.log(`server running in ${env.NODE_ENV} mode on PORT ${PORT}`.yellow.bold)
-);
+  console.log(`server running in ${env.NODE_ENV} mode on PORT ${PORT}`.yellow.bold));
 
 process.on('unhandledRejection', err => {
   console.log(err.name, err.message);

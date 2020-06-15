@@ -1,11 +1,4 @@
-import {
-  Button,
-  Container,
-  Grid,
-  Link,
-  TextField,
-  Typography
-} from '@material-ui/core';
+import { Button, Container, Grid, Link, TextField, Typography } from '@material-ui/core';
 import Avatar from '@material-ui/core/Avatar';
 import { makeStyles } from '@material-ui/core/styles';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
@@ -109,7 +102,7 @@ const SignUp = () => {
 
   const signup = async user => {
     const url = `${environment.apiUrl}${environment.apis.signup}`;
-    const response = await sendRequest(url, 'POST', user, {});
+    const response = await sendRequest(url, 'POST', {}, user, {});
 
     if (response.data) {
       showDialogBox('Success', 'User added successfully');

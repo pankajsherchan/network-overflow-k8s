@@ -1,7 +1,7 @@
 import httpStatusCodes from 'http-status-codes';
 import AppError from '../application/error/appError';
+import constant from '../constant';
 import User from '../database/schemas/user.schema';
-import env from '../env';
 import { logger } from '../utils';
 import { generateToken, hashPassword } from './authentication.service';
 import sendEmail from './email.service';
@@ -48,9 +48,9 @@ export const updateUser = async (id, user) => await updateOne(User, id, user);
 export const deleteUser = async id => deleteOne(User, id);
 
 export const sendUserAddVerificationEmail = async (username, email) => {
-  const userVerificationToken = generateToken(env.VERIFY_USER_SECRET_KEY, username);
+  const userVerificationToken = generateToken(constant.VERIFY_USER_SECRET_KEY, username);
 
-  const url = `${env.BASE_URL}/confirmation/${userVerificationToken}`;
+  const url = `${constant.BASE_URL}/confirmation/${userVerificationToken}`;
 
   const emailConfig = {
     receiver: email,

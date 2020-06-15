@@ -1,6 +1,6 @@
 import httpStatusCodes from 'http-status-codes';
 import jwt from 'jsonwebtoken';
-import env from '../../env';
+import constant from '../../constant';
 import * as authService from '../../services';
 import { catchAsync, checkResponseHandler, logger } from '../../utils';
 import AppError from '../error/appError';
@@ -46,7 +46,7 @@ export const verifyUser = catchAsync(async (req, res, next) => {
     next(new AppError('No token found', 401));
   }
 
-  const userTokenData = authService.verifyToken(tokenId, env.VERIFY_USER_SECRET_KEY);
+  const userTokenData = authService.verifyToken(tokenId, constant.VERIFY_USER_SECRET_KEY);
 
   console.log('userTokenData: ', userTokenData);
 
@@ -75,7 +75,7 @@ export const verifyForgotPassword = catchAsync(async (req, res, next) => {
     next(new AppError('No token found', 401));
   }
 
-  const forgotPasswordTokenData = authService.verifyToken(tokenId, env.FORGOT_PASSWORD_SECRET_KEY);
+  const forgotPasswordTokenData = authService.verifyToken(tokenId, constant.FORGOT_PASSWORD_SECRET_KEY);
 
   console.log('verifyForgotPasswordToken: ', forgotPasswordTokenData);
 
@@ -102,7 +102,7 @@ export const extractAndVerifyToken = (req, res, next) => {
     return next(new AppError('You are not logged in.', 401));
   }
 
-  if (verifyToken(token, env.LOGIN_USER_SECRET_KEY)) {
+  if (verifyToken(token, constant.LOGIN_USER_SECRET_KEY)) {
     // get the user information
     // check if the user is verified
 

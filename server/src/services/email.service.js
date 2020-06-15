@@ -1,11 +1,12 @@
 import sendGridMail from '@sendgrid/mail';
 import httpStatusCode from 'http-status-codes';
 import AppError from '../application/error/appError';
-import env from '../env';
+import constant from '../constant';
 import { logger } from '../utils';
 
+
 // todo: needs to move to separate config file
-sendGridMail.setApiKey(env.SEND_GRID_API_KEY);
+sendGridMail.setApiKey(constant.SEND_GRID_API_KEY);
 
 const templates = {
   call_to_action: 'd-2bf18ceba1734ea3aa70d02143590878'

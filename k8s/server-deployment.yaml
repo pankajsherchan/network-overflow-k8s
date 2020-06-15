@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: server
+  template:
+    metadata:
+      labels:
+        app: server
+    spec:
+      containers:
+        - name: server
+          image: pankajsherchan/network-overflow-server
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: PORT
+              value: "5000"
+            - name: MONGO_URI
+              value: mongodb://mongo:27017/network-overflow
+            - name: MONGO_URI_ATLAS
+              value: mongodb+srv://<username>:<password>@cluster0-xdu8a.mongodb.net/<database>?retryWrites=true&w=majority
+            - name: MONGO_USERNAME
+              value: pankajsherchan
+            - name: MONGO_DATABASE
+              value: network-overflow
+            - name: MONGO_PASSWORD
+              value: GOiiR2UV9qp2LIqw
+            - name: FRONTEND_BASE_URL
+              value: client-cluster-ip-service
+            - name: BASE_URL
+              value: server-cluster-ip-service
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 5000
